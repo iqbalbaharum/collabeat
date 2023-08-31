@@ -9,7 +9,7 @@ export function ConnectedWalletInfo() {
 
   return (
     <>
-      {current.chain === CURRENT_CHAIN.EVM && <ConnectWallet />}
+      {current.chain === CURRENT_CHAIN.EVM && <ConnectWallet chain={CURRENT_CHAIN.BINANCE} chainId={157} />}
       {current.chain === CURRENT_CHAIN.SOLANA && (
         <>
           {/* #484c50 */}

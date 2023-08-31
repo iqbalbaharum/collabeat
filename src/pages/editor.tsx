@@ -2,7 +2,6 @@ import Waveform from 'components/Waveform'
 import { AudioState, Metadata, PlayerState, SelectedAudio } from 'lib'
 import { useContext, useEffect, useState } from 'react'
 import RecordingDialog from 'components/RecordingDialog'
-import MintButton from 'components/MintButton'
 import ForkDialog from 'components/ForkDialog'
 import ShareDialog from 'components/ShareDialog'
 import { DownloadIcon, JSONIcon, LoadingSpinner, ShareIcon } from 'components/Icons/icons'
@@ -70,8 +69,7 @@ const PageEditor = () => {
         for (const meta of metadatas) {
           if (meta.version === version) {
             const res = await rpc.getContentFromIpfs(meta.cid)
-            const data = JSON.parse(res.data.result.content)
-            console.log(res)
+            const data = JSON.parse(res.data.result.content as string)
             filteredData.push({
               key: meta.public_key,
               data: data.content,
