@@ -6,6 +6,8 @@ import ConnectNear from 'components/Connect/ConnectNear';
 import { CURRENT_CHAIN } from 'store/slices/wallet.slice';
 import { arbitrum, bsc, celo, mainnet, polygon } from 'wagmi/chains'
 import { useState } from 'react';
+import login from 'assets/img/login.jpeg'
+import bgcolla from 'assets/img/bgcolla.png'
 
 const chains = [
   {
@@ -54,19 +56,22 @@ export default function SignInModal() {
     <>
       <Dialog open={modal.signUpMain.isOpen} onClose={() => setModalState({ signUpMain: { isOpen: false } })}>
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-        <div className="fixed left-1/2 md:w-3/4 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-lg border border-slate-500 bg-[#0D0D0D] text-white">
+        <div className="fixed left-1/2 w-4/5 md:w-3/4 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-lg border border-slate-500 bg-[#0D0D0D] text-white">
           <Dialog.Panel>
             <div className="w-full sm:px-0 grid grid-cols-4">
-              <div>
+              <div className="col-span-4 lg:col-span-1">
                 <img
                   alt="Trainer"
-                  src="https://images.unsplash.com/photo-1611510338559-2f463335092c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80"
-                  className="h-32 w-full object-cover md:h-full"
+                  /* src="https://images.unsplash.com/photo-1611510338559-2f463335092c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80" */
+                  src={login}
+                  /* src={bgcolla} */
+                  className="h-48 w-full object-cover md:h-full rounded-t-lg md:rounded-l-lg  md:rounded-tr-none"
                 />
               </div>
-              <div className="col-span-3 flex flex-col gap-5 space-x-1 rounded-xl bg-blue-900">
-                <div className="hidden sm:block bg-blue-800 p-3">
-                  <nav className="flex gap-1" aria-label="Tabs">
+
+              <div className="col-span-4 lg:col-span-3 flex flex-col gap-5 space-x-1 bg-blue-900 h-[350px] md:h-[340px] rounded-b-lg md:rounded-r-lg md:rounded-bl-none">
+                <div className="bg-blue-800 p-3 relative md:rounded-r-lg" style={{ width: "100%" }}>
+                  <nav className="block gap-1 inline-flex overflow-x-auto max-w-[100%] py-4 md:py-0" aria-label="Tabs" >
                     {chains.map((chain, index) => {
                       const isSelected = index === selectedIndex;
                       return (
@@ -75,8 +80,8 @@ export default function SignInModal() {
                           key={index}
                           className={
                             isSelected
-                              ? "shrink-0 rounded-lg bg-green-600 p-2 text-sm font-medium text-green-100"
-                              : "shrink-0 rounded-lg p-2 text-sm font-medium text-gray-300 hover:bg-green-300 hover:text-gray-700"
+                              ? "shrink-0 rounded-lg bg-green-600 p-2 md:text-sm font-medium text-green-100"
+                              : "shrink-0 rounded-lg p-2 md:text-sm font-medium text-gray-300 hover:bg-green-300 hover:text-gray-700"
                           }
                           onClick={(e) => {
                             e.preventDefault(); // Prevents the default link behavior
@@ -89,7 +94,7 @@ export default function SignInModal() {
                     })}
                   </nav>
                 </div>
-                <div className="mt-3">
+                <div className="mt-4 ">
                   <div className={chains[selectedIndex].name == 'Ethereum' ? "" : "hidden"}>
                     <ConnectWallet chain={CURRENT_CHAIN.ETHEREUM} chainId={mainnet.id} />
                   </div>
