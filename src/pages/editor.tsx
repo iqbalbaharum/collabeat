@@ -10,15 +10,18 @@ import { useAccount } from 'wagmi'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { createMixedAudio, formatDataKey } from 'utils'
 import audioBuffertoWav from 'audiobuffer-to-wav'
-import { check_if_bookmarked } from 'apollo-client'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import exportImg from 'assets/icons/export.png'
 import { useApi } from 'hooks/use-api'
+import { useBoundStore } from 'store'
 
 const PageEditor = () => {
+  const navigate = useNavigate()
   const { chainId, tokenAddress, version, tokenId } = useParams()
   const { address } = useAccount()
   const { rpc } = useApi()
+  const { nft, setNFTState } = useBoundStore()
+  const isOwner = Boolean(address) && nft?.owner?.toLowerCase() === address?.toLowerCase()
 
   const { showError } = useContext(AlertMessageContext)
 
@@ -47,7 +50,7 @@ const PageEditor = () => {
   useEffect(() => {
     const init = () => {
       const key = formatDataKey(chainId as String, tokenAddress as String, tokenId as String)
-      console.log(key)
+      setNFTState({ data_key: key, version })
       setNftKey(key)
     }
 
@@ -92,17 +95,17 @@ const PageEditor = () => {
       }
     }
 
+    if (!nft?.owner) navigate('/inventory')
+
     if (data == null && nftKey && !isLoad) {
       load()
     }
   }, [nftKey, data, isLoad, rpc, version])
 
-  useEffect(() => {
-    const checkBookmarked = async (tokenId: string) => {
-      const isMinted = await check_if_bookmarked(address ?? '0x', tokenId)
-      setDisplayDownloadButton(isMinted)
-    }
-  }, [nftKey, tokenId])
+  /*  
+   const { data: isMinted } = useCheckBookmarkedSheets(address ?? '0x', tokenId as string)
+   setDisplayDownloadButton(Boolean(isMinted)) 
+  */
 
   const setAllState = (state: PlayerState) => {
     setFilteredData(prev =>
@@ -231,12 +234,12 @@ const PageEditor = () => {
 
   return (
     <>
-      <div className="px-2 pb-5 pb-[130px]">
+      <div className="px-2 pb-[130px]">
         <div className="fixed bottom-0 left-0 mb-5 flex w-full items-center justify-center">
           <div className="flex items-center justify-between rounded-xl bg-gray-700 p-2">
             {finishedCounter <= 0 ? (
               <button
-                className="mr-2 rounded-xl px-8 py-3 text-black text-black hover:bg-[#1C1C1C]"
+                className="mr-2 rounded-xl px-8 py-3 text-black  hover:bg-[#1C1C1C]"
                 onClick={() => setAllState(PlayerState.PLAY)}
               >
                 <svg fill="#00FF00" height="32px" width="32px" version="1.1" viewBox="0 0 32 32">
@@ -289,21 +292,25 @@ const PageEditor = () => {
             <div className="flex gap-1 md:gap-2">
               {/* {tokenId && <MintButton tokenId={tokenId} />} */}
 
-              {isForking ? (
-                <button
-                  className={`flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-red-500 p-2 text-xs font-bold text-white md:hover:scale-105`}
-                  onClick={() => toggleForkingMode()}
-                >
-                  <span> Cancel</span>
-                </button>
-              ) : (
-                <button
-                  className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
-                  onClick={() => toggleForkingMode()}
-                >
-                  <img className="mb-1" src={exportImg} height={20} width={20} alt="fork" />
-                  <span>Export</span>
-                </button>
+              {isOwner && (
+                <>
+                  {isForking ? (
+                    <button
+                      className={`flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-red-500 p-2 text-xs font-bold text-white md:hover:scale-105`}
+                      onClick={() => toggleForkingMode()}
+                    >
+                      <span> Cancel</span>
+                    </button>
+                  ) : (
+                    <button
+                      className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
+                      onClick={() => toggleForkingMode()}
+                    >
+                      <img className="mb-1" src={exportImg} height={20} width={20} alt="fork" />
+                      <span>Export</span>
+                    </button>
+                  )}
+                </>
               )}
 
               {displayDownloadButton && (

@@ -1,4 +1,4 @@
-import SHA256 from 'crypto-js/sha256'
+import { SHA256 } from 'crypto-js'
 import { encode } from 'bs58'
 
 export * from './abbreviate-balance'
@@ -140,6 +140,9 @@ export function networkToChainId(chain: string) {
     case 'near':
       chainId = 'near'
       break
+    case 'mumbai':
+      chainId = '80001'
+      break
     default:
       break
   }
@@ -147,8 +150,33 @@ export function networkToChainId(chain: string) {
   return chainId
 }
 
+export function chainIdToNetwork(chain: string) {
+  switch (chain) {
+    case 'eth':
+    case '1':
+      return 'homestead'
+    case '137':
+      return 'matic'
+    case '56':
+      return 'bsc'
+    case '42161':
+      return 'arbitrum'
+    case 'celo':
+    case '42220':
+      return 'celo'
+    case 'sol':
+    case 'solana':
+      return 'solana'
+    case 'near':
+      return 'near'
+    case '80001':
+      return 'mumbai'
+    default:
+      return ''
+  }
+}
 export function formatDataKey(chain_id: String, address: String, token_id: String) {
-  const input = `${chain_id}${address}${token_id}`
+  const input = `${chain_id}${address?.toLowerCase()}${token_id}`
   const sha256Hash = SHA256(input).toString()
   const uint8Array = hexToUint8Array(sha256Hash)
   return encode(uint8Array)
@@ -166,4 +194,70 @@ function hexToUint8Array(hexString: String): Uint8Array {
   }
 
   return arrayBuffer
+}
+
+export function formatTokenKey(chain_id: String, address: String) {
+  const input = `${chain_id}${address}`
+  const sha256Hash = SHA256(input).toString()
+  const uint8Array = hexToUint8Array(sha256Hash)
+  return encode(uint8Array)
+}
+
+export function timeAgo(timestamp: number): string {
+  const secondsPast = (Date.now() - timestamp) / 1000
+
+  if (secondsPast < 60) {
+    return `${Math.floor(secondsPast)} seconds ago`
+  }
+  if (secondsPast < 3600) {
+    return `${Math.floor(secondsPast / 60)} minutes ago`
+  }
+  if (secondsPast <= 86400) {
+    return `${Math.floor(secondsPast / 3600)} hours ago`
+  }
+  if (secondsPast > 86400) {
+    const days = Math.floor(secondsPast / 86400)
+    return `${days} day${days !== 1 ? 's' : ''} ago`
+  }
+
+  return ''
+}
+
+const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+
+export function convertCamelToSnakeCase(obj: Record<string, any>) {
+  if (typeof obj === 'object' && obj !== null) {
+    if (Array.isArray(obj)) {
+      for (let i = 0; i < obj.length; i++) {
+        obj[i] = convertCamelToSnakeCase(obj[i])
+      }
+    } else {
+      const newObj: Record<string, any> = {}
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          const newKey = camelToSnakeCase(key)
+          newObj[newKey] = convertCamelToSnakeCase(obj[key])
+        }
+      }
+      return newObj
+    }
+  }
+  return obj
+}
+
+const snakeToCamelCase = (str: string) => str.replace(/(\_\w)/g, k => k[1].toUpperCase())
+
+export function convertSnakeToCamelCase(obj: Record<string, any>) {
+  if (typeof obj === 'object' && obj !== null) {
+    const newObj: Record<string, any> = {}
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const newKey = snakeToCamelCase(key)
+        newObj[newKey] = convertSnakeToCamelCase(obj[key])
+      }
+    }
+    return newObj
+  }
+
+  return obj
 }

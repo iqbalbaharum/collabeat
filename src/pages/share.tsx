@@ -30,7 +30,7 @@ const PageShareEditor = () => {
   const [isDialogRecordingOpened, setIsDialogRecordingOpened] = useState(false)
   const [isShareDialogShow, setIsShareDialogShow] = useState(false)
   const [canRecord, setCanRecord] = useState(false)
-  const { connectWeb3Auth, isInitiated } = useWeb3Auth()
+  const { connect, isInitiated } = useWeb3Auth()
 
   // simple way to keep track whether all beats finished playing; once finished, set button to play
   const [finishedCounter, setFinishedCounter] = useState(-1)
@@ -95,7 +95,7 @@ const PageShareEditor = () => {
 
   useEffect(() => {
     async function init() {
-      await connectWeb3Auth()
+      await connect()
     }
 
     if (isInitiated) init()

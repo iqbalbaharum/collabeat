@@ -1,11 +1,12 @@
 import { LoadingSpinner } from 'components/Icons/icons'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { useContext, useState } from 'react'
+import { useBoundStore } from 'store'
 import { parseEther } from 'viem'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 
-interface Props { 
-  cid:string, 
+interface Props {
+  cid: string
   onForkSuccess: () => void
 }
 
@@ -13,23 +14,48 @@ const ConfirmButton = ({ cid, onForkSuccess }: Props) => {
   const { showError } = useContext(AlertMessageContext)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
+  const { nft } = useBoundStore()
+  const { data_key, metadata, version } = nft
+
   const { config } = usePrepareContractWrite({
     address: String(import.meta.env.VITE_COLLABEAT) as `0x${string}`,
     abi: [
       {
         inputs: [
-          { internalType: 'string', name: 'name', type: 'string' },
-          { internalType: 'string', name: 'ipfs_address', type: 'string' },
-          { internalType: 'string', name: 'cid', type: 'string' },
+          {
+            internalType: 'string',
+            name: 'data_key',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'version',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'nft_name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'ipfs_address',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'cid',
+            type: 'string',
+          },
         ],
-        name: 'fork',
+        name: 'mintRequest',
         outputs: [],
         stateMutability: 'payable',
         type: 'function',
       },
     ],
-    functionName: 'fork',
-    args: ['', import.meta.env.VITE_IPFS_FORK_MULTIADDRESS ?? '', cid],
+    functionName: 'mintRequest',
+    args: [data_key, version, metadata?.name, import.meta.env.VITE_IPFS_FORK_MULTIADDRESS ?? '', cid],
     value: parseEther('0.015'),
     onError(error) {
       console.log('Error', error)
