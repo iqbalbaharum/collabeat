@@ -13,19 +13,22 @@ const useGetNftByWalletAddress = ({ address, chain }: { address: string; chain: 
       try {
         const response = await getNftsByWalletAddress(address, 'binance')
 
-        const nfts = response.data.result.map((d: { token_address: any; token_id: any; metadata: string }) => {
-          const meta = JSON.parse(d.metadata)
-          if (meta.image.startsWith('ipfs://')) {
-            meta.image = meta.image.replace('ipfs://', 'https://ipfs.io/ipfs/')
-          }
+        const nfts = response.data.result.map(
+          (d: { token_address: any; token_id: any; metadata: string; owner_of: string }) => {
+            const meta = JSON.parse(d.metadata)
+            if (meta.image.startsWith('ipfs://')) {
+              meta.image = meta.image.replace('ipfs://', 'https://ipfs.io/ipfs/')
+            }
 
-          return {
-            token_address: d.token_address,
-            token_id: d.token_id,
-            chain_id: chain,
-            metadata: meta,
+            return {
+              token_address: d.token_address,
+              token_id: d.token_id,
+              chain_id: chain,
+              metadata: meta,
+              owner: d.owner_of,
+            }
           }
-        }) as Nft[]
+        ) as Nft[]
 
         return nfts
       } catch (e) {

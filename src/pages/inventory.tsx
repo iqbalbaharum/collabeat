@@ -21,8 +21,7 @@ const PageInventory = () => {
   })
 
   const goToNftPage = (nft: Nft) => {
-    const { chain_id, metadata, token_address, token_id } = nft
-    setNFTState({ chain_id, metadata, token_address, token_id: `${token_id}` })
+    setNFTState({ ...nft, token_id: `${nft.token_id}` })
     navigate(`/nft`, { state: { nft } })
   }
 

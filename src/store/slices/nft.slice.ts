@@ -2,7 +2,7 @@ import { StateCreator } from 'zustand'
 import { resetters } from '..'
 import { Transaction } from 'services/rpc'
 
-type NFTType = Partial<Transaction> & { metadata?: Record<any, string> }
+type NFTType = Partial<Transaction> & { metadata?: Record<any, string>; owner?: string }
 
 export interface NFTSlice {
   nft: NFTType
@@ -15,9 +15,10 @@ const initialNFT = {
     chain_id: '',
     token_address: '',
     token_id: '',
-    metadata: {},
     data_key: undefined,
     version: undefined,
+    metadata: {},
+    owner: undefined,
   },
 }
 
