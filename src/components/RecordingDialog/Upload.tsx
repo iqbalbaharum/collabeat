@@ -30,7 +30,7 @@ const Upload = (prop: UploadProp) => {
   const { publish } = rpc
 
   const { address } = useAccount()
-  const { signMessage: signMessageWeb3Auth, isConnected } = useWeb3Auth()
+  const { signMessage: signMessageWeb3Auth, isConnected, getAccounts } = useWeb3Auth()
 
   const { signMessageAsync } = useSignMessage({
     onSuccess(signature) {
@@ -79,12 +79,13 @@ const Upload = (prop: UploadProp) => {
         const results = await signMessageWeb3Auth(audioUrl)
         if (!results) throw Error('unable to sign')
 
-        const { torusAddress, signature } = results
+        const { signature } = results
+        let address = await getAccounts()
 
         await add_new_beat({
           signature,
           chainId: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
-          address: torusAddress as `0x${string}`,
+          address: address as `0x${string}`,
         })
       } catch (e: unknown) {
         const error = e as Error

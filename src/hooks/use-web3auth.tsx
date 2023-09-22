@@ -1,21 +1,33 @@
-import { SafeEventEmitterProvider } from '@web3auth/base'
+import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base'
 import { Web3Auth } from '@web3auth/modal'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+import { OpenloginAdapter, OpenloginUserInfo } from '@web3auth/openlogin-adapter'
 import { TorusWalletAdapter } from '@web3auth/torus-evm-adapter'
 import { TorusWalletConnectorPlugin } from '@web3auth/torus-wallet-connector-plugin'
 import { createContext, useContext, useEffect, useState } from 'react'
-import RPC from 'utils/web3'
-import Web3 from 'web3'
+import RPC from 'utils/ethers'
+import Web3, { Bytes } from 'web3'
+
+interface WriteContractArgs {
+  contractABI: any
+  contractAddress: string
+  data: any
+  method: string
+}
 
 interface Web3AuthContextInterface {
   isInitiated: boolean
   torusAddress: string
   web3Auth: Web3Auth | null
   web3: Web3 | undefined
+  userInfo: Partial<OpenloginUserInfo> | undefined
   initWeb3AuthModal: () => Promise<void>
-  connectWeb3Auth: () => Promise<void>
+  connect: () => Promise<void>
+  disconnect: () => Promise<void>
   isConnected: () => boolean
-  signMessage: (message: string) => Promise<{ signature: string; torusAddress: string } | undefined>
+  signMessage: (message: string) => Promise<{ signature: string } | undefined>
+  writeContract: (data: WriteContractArgs) => Promise<Bytes | null>
+  getAccounts: () => Promise<any>
+  getUserInfo: () => Promise<any>
 }
 
 interface Web3AuthProviderProps {
@@ -38,24 +50,21 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null)
   const [torusPlugin, setTorusPlugin] = useState<TorusWalletConnectorPlugin>()
   const [torusAddress, setTorusAddress] = useState<string>('')
-  const [web3, setWeb3] = useState<Web3>(new Web3())
+  const [web3, setWeb3] = useState<Web3>()
   const [isInitiated, setIsInitiated] = useState<boolean>(false)
 
+  const [userInfo, setUserInfo] = useState<Partial<OpenloginUserInfo>>()
+
   async function initWeb3AuthModal(): Promise<void> {
-    const MUMBAI_HEXADECIMAL_CHAIN_ID = parseInt(import.meta.env.VITE_DEFAULT_CHAIN_ID).toString(16)
+    // const MUMBAI_HEXADECIMAL_CHAIN_ID = parseInt(import.meta.env.VITE_DEFAULT_CHAIN_ID).toString(16)
 
     const web3auth = new Web3Auth({
       clientId: import.meta.env.VITE_WEB3AUTH_CLIENT_ID,
+      web3AuthNetwork: import.meta.env.VITE_WEB3AUTH_NETWORK,
       chainConfig: {
-        chainNamespace: 'eip155',
-        chainId: `0x${MUMBAI_HEXADECIMAL_CHAIN_ID}`,
-        rpcTarget: 'https://rpc.ankr.com/polygon_mumbai',
-        // Avoid using public rpcTarget in production.
-        // Use services like Infura, Quicknode etc
-        displayName: 'Polygon Mumbai Testnet',
-        blockExplorer: 'https://mumbai.polygonscan.com/',
-        ticker: 'MATIC',
-        tickerName: 'Matic',
+        chainNamespace: CHAIN_NAMESPACES.EIP155,
+        chainId: `${import.meta.env.VITE_DEFAULT_CHAIN_ID_HEX}`,
+        rpcTarget: import.meta.env.VITE_INFURA_URL,
       },
     })
 
@@ -64,7 +73,7 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
         mfaLevel: 'optional',
       },
       adapterSettings: {
-        uxMode: 'popup',
+        uxMode: 'redirect',
         whiteLabel: {
           name: 'Web3Auth',
           logoLight: 'https://web3auth.io/images/w3a-L-Favicon-1.svg',
@@ -72,14 +81,14 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
           defaultLanguage: 'en',
           dark: true, // whether to enable dark mode. defaultValue: false
         },
-        network: 'testnet',
+        network: import.meta.env.VITE_WEB3AUTH_NETWORK,
       },
     })
 
     web3auth.configureAdapter(openloginAdapter)
 
     const torusplugin = new TorusWalletConnectorPlugin({
-      torusWalletOpts: { buttonSize: 0 },
+      torusWalletOpts: { buttonSize: 50, buttonPosition: 'bottom-left', modalZIndex: 99 },
       walletInitOptions: {
         whiteLabel: {
           theme: { isDark: true, colors: { primary: '#00a8ff' } },
@@ -100,41 +109,78 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
 
     // it will add/update  the torus-evm adapter in to web3auth class
     web3auth.configureAdapter(torusWalletAdapter)
+    setWeb3Auth(web3auth)
 
     await web3auth.initModal()
-    setWeb3Auth(web3auth)
+
+    setWeb3(new Web3(web3auth.provider as any))
     setProvider(web3auth.provider)
-    if (web3auth) setIsInitiated(true)
+
+    if (web3auth.connected) {
+      const user = await web3auth?.getUserInfo()
+      if (user) setUserInfo(user)
+      if (web3auth) setIsInitiated(true)
+    }
   }
 
-  async function connectWeb3Auth() {
+  async function connect() {
     if (web3Auth) {
       const provider = await web3Auth.connect()
       setProvider(provider)
+
+      const user = await web3Auth?.getUserInfo()
+      if (user) setUserInfo(user)
     }
   }
+
+  async function disconnect() {
+    if (web3Auth) await web3Auth.logout()
+    setUserInfo(undefined)
+  }
+
   async function signMessage(message: string) {
     if (!provider) {
       console.log('Provider not initialized yet')
       return
     }
 
-    const web3 = new Web3(web3Auth?.provider as any)
-    web3.setProvider(torusPlugin?.proxyProvider as any)
-    const address = await web3.eth.getAccounts()
-
-    const rpc = new RPC(torusPlugin?.proxyProvider as any, web3 as any)
+    const rpc = new RPC(provider)
     const signedMessage = await rpc.signMessage(message)
 
-    setTorusAddress(address[0])
-    setWeb3(web3)
-
-    return { signature: signedMessage, torusAddress: address[0] }
+    return { signature: signedMessage }
   }
 
   function isConnected() {
     return web3Auth?.status === 'connected'
   }
+
+  async function writeContract(data: WriteContractArgs) {
+    if (!provider) return
+
+    const rpc = new RPC(provider)
+    return await rpc.contractMethod(data)
+  }
+
+  async function getAccounts() {
+    if (!provider) {
+      return
+    }
+    const rpc = new RPC(provider)
+    const addresses = await rpc.getAccounts()
+    return addresses
+  }
+
+  async function getUserInfo() {
+    if (!web3Auth) return
+
+    const user = await web3Auth.getUserInfo()
+    return user
+  }
+
+  useEffect(() => {
+    const web3 = new Web3(provider as any)
+    setWeb3(web3)
+  }, [web3Auth?.connected])
 
   useEffect(() => {
     async function init() {
@@ -148,13 +194,18 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
     <Web3AuthContext.Provider
       value={{
         initWeb3AuthModal,
-        connectWeb3Auth,
+        connect,
+        disconnect,
         signMessage,
+        writeContract,
         isConnected,
         web3Auth,
         torusAddress,
         web3,
         isInitiated,
+        userInfo,
+        getAccounts,
+        getUserInfo,
       }}
     >
       {children}
