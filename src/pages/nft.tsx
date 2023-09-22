@@ -124,23 +124,24 @@ const PageNft = () => {
     <>
       {nft && (
         <div className="flex justify-center">
-          <div className="block w-3/4">
+          <div className="block w-[90%] md:w-3/4">
             <div className="bg-[#181818] rounded p-4">
-              <div className="flex">
-                <div className="flex-auto w-1/4">
+              <div className="flex flex-wrap">
+                <div className="flex-auto md:w-1/4">
                   <img src={nft.metadata.image} className="rounded-lg bg-white w-full h-full" />
                 </div>
-                <div className="flex-auto w-3/4 px-5">
+                <div className="flex-auto w-3/4 px-2 md:px-5 py-6 md:py-0">
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold">{nft.metadata.name}</span>
                   </div>
                   <div>
-                    <div className="flex justify-between text-gray-400 text-sm my-2">
+                    <div className="flex text-gray-400 text-sm my-2">
                       <div className="">
-                        Address: {nft.token_address} <span className="mx-3">&#8226;</span> #{nft.token_id}{' '}
+                        <span className='truncate'>Address: {nft.token_address}</span><span className="mx-3">&#8226;</span> #{nft.token_id}{' '}
                         <span className="mx-3">&#8226;</span> <ChainName chainId="56" />
                       </div>
                     </div>
+                    
                     <p className="">{nft.metadata.description}</p>
                   </div>
                 </div>

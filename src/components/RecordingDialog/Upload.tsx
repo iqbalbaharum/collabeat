@@ -80,7 +80,7 @@ const Upload = (prop: UploadProp) => {
         if (!results) throw Error('unable to sign')
 
         const { signature } = results
-        let address = await getAccounts()
+        const address = await getAccounts()
 
         await add_new_beat({
           signature,
@@ -119,7 +119,7 @@ const Upload = (prop: UploadProp) => {
         mcdata: '',
         meta_contract_id: import.meta.env.VITE_META_CONTRACT_ID as string,
         method: 'metadata',
-        public_key: address as `0x${string}`,
+        public_key: address,
         signature,
         token_address: prop.address.toString(),
         token_id: prop.tokenId.toString(),
