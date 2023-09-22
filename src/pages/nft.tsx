@@ -1,5 +1,4 @@
 import ChainName from 'components/ChainName'
-import MusicCard from 'components/MusicCard'
 import ShareDialog from 'components/ShareDialog'
 import { PlayerState, Sheet } from 'lib'
 import { useEffect, useState } from 'react'
@@ -17,18 +16,14 @@ const PageNft = () => {
   const { rpc } = useApi()
 
   const { nft } = location.state || {}
-
   const [nftKey, setNftKey] = useState('')
-  const [chainId, setChainId] = useState('')
-  const [tokenAddress, setTokenAddress] = useState('')
-  const [tokenId, setTokenId] = useState('')
   // versions
   const [data, setData] = useState<String[]>([])
   const [isDataLoaded, setIsDataLoaded] = useState(false)
 
   useEffect(() => {
     const loadVersion = async () => {
-      const nftKey = formatDataKey(nft.chain_id as String, nft.address as String, nft.token_id as String)
+      const nftKey = formatDataKey(nft.chain_id as String, nft.token_address as String, nft.token_id as String)
 
       const response = await rpc.getMetadataUseKeyByBlock(nftKey, import.meta.env.VITE_META_CONTRACT_ID as String, '')
 
@@ -75,16 +70,11 @@ const PageNft = () => {
   // init
   useEffect(() => {
     const init = () => {
-      const key = formatDataKey(nft.chain_id, nft.address, nft.token_id)
+      const key = formatDataKey(nft.chain_id, nft.token_address, nft.token_id)
       setNftKey(key)
-      setChainId(nft.chain_id)
-      setTokenAddress(nft.address)
-      setTokenId(nft.token_id)
     }
 
-    if (nft && !nftKey) {
-      init()
-    }
+    if (nft && !nftKey) init()
   }, [nft, nftKey])
 
   const [audioContext, setAudioContext] = useState(new AudioContext())
@@ -147,7 +137,7 @@ const PageNft = () => {
                   <div>
                     <div className="flex justify-between text-gray-400 text-sm my-2">
                       <div className="">
-                        Address: {nft.address} <span className="mx-3">&#8226;</span> #{nft.token_id}{' '}
+                        Address: {nft.token_address} <span className="mx-3">&#8226;</span> #{nft.token_id}{' '}
                         <span className="mx-3">&#8226;</span> <ChainName chainId="56" />
                       </div>
                     </div>
@@ -179,13 +169,13 @@ const PageNft = () => {
                     key={index}
                     nftKey={nftKey}
                     chainId={nft.chain_id}
-                    tokenAddress={nft.address}
+                    tokenAddress={nft.token_address}
                     tokenId={nft.token_id}
                     version={d}
                     onHandleShareClicked={() =>
                       setShareDialogState({
                         chainId: nft.chain_id,
-                        tokenAddress: nft.address,
+                        tokenAddress: nft.token_address,
                         tokenId: nft.token_id,
                         version: d.toString(),
                         opened: true,
@@ -217,9 +207,9 @@ const PageNft = () => {
         </div>
       )}
       <VersionModal
-        chainId={chainId}
-        tokenAddress={tokenAddress}
-        tokenId={tokenId}
+        chainId={nft.chain_id}
+        tokenAddress={nft.token_address}
+        tokenId={nft.token_id}
         isOpen={isModalOpen}
         onClose={closeModal}
       />

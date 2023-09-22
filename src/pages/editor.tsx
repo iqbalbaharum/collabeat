@@ -13,11 +13,13 @@ import audioBuffertoWav from 'audiobuffer-to-wav'
 import { useParams } from 'react-router-dom'
 import exportImg from 'assets/icons/export.png'
 import { useApi } from 'hooks/use-api'
+import { useBoundStore } from 'store'
 
 const PageEditor = () => {
   const { chainId, tokenAddress, version, tokenId } = useParams()
   const { address } = useAccount()
   const { rpc } = useApi()
+  const { setNFTState } = useBoundStore()
 
   const { showError } = useContext(AlertMessageContext)
 
@@ -46,7 +48,7 @@ const PageEditor = () => {
   useEffect(() => {
     const init = () => {
       const key = formatDataKey(chainId as String, tokenAddress as String, tokenId as String)
-      console.log(key)
+      setNFTState({ data_key: key, version })
       setNftKey(key)
     }
 
