@@ -3,10 +3,10 @@ import classNames from 'classnames'
 import { useIpfs } from 'hooks/use-ipfs'
 import { SelectedAudio } from 'lib'
 import { useContext, useEffect, useState } from 'react'
-import ConfirmButton from './ConfirmButton'
 import { AlertMessageContext } from 'hooks/use-alert-message'
+import ConfirmButton from './ConfirmButton'
 
-interface ForkDialogProp {
+interface NftifyDialogProp {
   tokenId: String
   dataKey: String
   isOpened: boolean
@@ -14,7 +14,7 @@ interface ForkDialogProp {
   selectedAudios: SelectedAudio[]
 }
 
-const ForkDialog = (prop: ForkDialogProp) => {
+const NftifyDialog = (prop: NftifyDialogProp) => {
   const [uploadedCid, setUplodedCid] = useState('')
   const { showSuccess } = useContext(AlertMessageContext)
 
@@ -60,11 +60,11 @@ const ForkDialog = (prop: ForkDialogProp) => {
             </div>
             <div className="text-center">
               <h3 className="Roboto mb-8 text-lg font-medium leading-6 text-[#DCDCDC]" id="modal-headline">
-                Remix Sheet
+                NFTify Sheet
               </h3>
               <div className="mt-2">
                 <p className="Roboto text-xs text-[#DCDCDC]">
-                  You are remixing <b>{`${prop.selectedAudios.length}`} beat(s)</b>
+                  You are NFTifying <b>{`${prop.selectedAudios.length}`} beat(s)</b>
                 </p>
               </div>
               <div className="mt-6 flex justify-center">
@@ -81,4 +81,4 @@ const ForkDialog = (prop: ForkDialogProp) => {
   )
 }
 
-export default ForkDialog
+export default NftifyDialog

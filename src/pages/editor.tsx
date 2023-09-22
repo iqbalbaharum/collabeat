@@ -2,7 +2,7 @@ import Waveform from 'components/Waveform'
 import { AudioState, Metadata, PlayerState, SelectedAudio } from 'lib'
 import { useContext, useEffect, useState } from 'react'
 import RecordingDialog from 'components/RecordingDialog'
-import ForkDialog from 'components/ForkDialog'
+import NftifyDialog from 'components/NftifyDialog'
 import ShareDialog from 'components/ShareDialog'
 import { DownloadIcon, JSONIcon, LoadingSpinner, ShareIcon } from 'components/Icons/icons'
 import LoadingIndicator from 'components/LoadingIndicator'
@@ -21,22 +21,19 @@ const PageEditor = () => {
   const { address } = useAccount()
   const { rpc } = useApi()
   const { nft, setNFTState } = useBoundStore()
-  const isOwner = Boolean(address) && nft?.owner?.toLowerCase() === address?.toLowerCase()
+  // const isOwner = Boolean(address) && nft?.owner?.toLowerCase() === address?.toLowerCase()
+  const isOwner = true
 
   const { showError } = useContext(AlertMessageContext)
-
-  const [displayDownloadButton, setDisplayDownloadButton] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
 
   const [nftKey, setNftKey] = useState('')
   const [data, setData] = useState<Metadata[]>()
   const [isLoad, setIsLoad] = useState(false)
   const [filteredData, setFilteredData] = useState<Array<AudioState>>([])
-  const [forkData, setForkData] = useState<Array<SelectedAudio>>([])
-  const [isForking, setIsForking] = useState(false)
+  const [nftifyData, setNftifyData] = useState<Array<SelectedAudio>>([])
 
   const [isDialogRecordingOpened, setIsDialogRecordingOpened] = useState(false)
-  const [isDialogForkOpened, setIsDialogForkOpened] = useState(false)
+  const [isDialogNftifyOpened, setIsDialogNftifyOpened] = useState(false)
   const [isShareDialogShow, setIsShareDialogShow] = useState(false)
   const [canRecord, setCanRecord] = useState(false)
 
@@ -172,64 +169,27 @@ const PageEditor = () => {
     }, 2000)
   }
 
-  const toggleForkingMode = () => {
+  const [audioContext] = useState(new AudioContext())
+
+  const toggleNftifyMode = () => {
     if (!address) {
-      showError('Connect your wallet to fork this beat')
+      showError('Connect your wallet to nftify this beat')
       return
     }
 
-    setIsForking(!isForking)
-
-    if (isForking) {
-      resetAllSelection()
-    } else {
-      setAllMuted(true)
-    }
-  }
-
-  const fork = () => {
     const selections: SelectedAudio[] = []
-
+  
     filteredData.forEach(audio => {
-      if (audio.selected) {
-        selections.push({
-          owner: audio.key,
-          data_key: nftKey,
-          cid: audio.data,
-        } as SelectedAudio)
-      }
+      selections.push({
+        owner: audio.key,
+        data_key: nftKey,
+        cid: audio.data,
+      } as SelectedAudio)
     })
 
-    setForkData(selections)
-  }
+    setNftifyData(selections)
 
-  const [audioContext] = useState(new AudioContext())
-
-  async function downloadBeat() {
-    setIsDownloading(true)
-
-    const mixed = await createMixedAudio(audioContext, nftKey)
-    const blob = new Blob([audioBuffertoWav(mixed)], { type: 'audio/wav' })
-
-    const url = window.URL.createObjectURL(blob)
-
-    const id = 'download-beats-link'
-    const fileName = `Collabeat #${tokenId}`
-    let linkEl = document.getElementById(id) as HTMLAnchorElement
-
-    if (linkEl) {
-      linkEl.href = url
-      linkEl.setAttribute('download', fileName)
-    } else {
-      linkEl = document.createElement('a')
-      linkEl.id = id
-      linkEl.href = url
-      linkEl.setAttribute('download', fileName)
-      document.body.appendChild(linkEl)
-    }
-
-    linkEl.click()
-    setIsDownloading(false)
+    setIsDialogNftifyOpened(!isDialogNftifyOpened)
   }
 
   return (
@@ -265,24 +225,12 @@ const PageEditor = () => {
               </button>
             )}
 
-            {!isForking && canRecord && (
+            {canRecord && (
               <button
                 className="from-20% mr-2 inline-block min-w-[8rem] rounded-xl bg-gradient-to-t from-[#7224A7] to-[#FF3065] px-8 py-3  font-bold text-white md:hover:scale-105"
                 onClick={() => setIsDialogRecordingOpened(!isDialogRecordingOpened)}
               >
                 Record
-              </button>
-            )}
-
-            {isForking && (
-              <button
-                className="from-20% mr-2 min-w-[8rem] rounded-xl bg-gradient-to-t from-[#F5517B] to-[#FEDC00] px-8 py-3 font-bold text-white md:hover:scale-105"
-                onClick={() => {
-                  fork()
-                  setIsDialogForkOpened(true)
-                }}
-              >
-                Export
               </button>
             )}
           </div>
@@ -294,41 +242,14 @@ const PageEditor = () => {
 
               {isOwner && (
                 <>
-                  {isForking ? (
-                    <button
-                      className={`flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-red-500 p-2 text-xs font-bold text-white md:hover:scale-105`}
-                      onClick={() => toggleForkingMode()}
-                    >
-                      <span> Cancel</span>
-                    </button>
-                  ) : (
-                    <button
+                  <button
                       className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
-                      onClick={() => toggleForkingMode()}
+                      onClick={() => toggleNftifyMode()}
                     >
                       <img className="mb-1" src={exportImg} height={20} width={20} alt="fork" />
-                      <span>Export</span>
+                      <span>NFTify</span>
                     </button>
-                  )}
                 </>
-              )}
-
-              {displayDownloadButton && (
-                <button
-                  className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F7507B] to-[#7523A7] p-2 text-xs font-bold text-white md:hover:scale-105`}
-                  disabled={isDownloading}
-                  onClick={() => downloadBeat()}
-                >
-                  {isDownloading ? (
-                    <LoadingSpinner />
-                  ) : (
-                    <>
-                      <DownloadIcon />
-                      <span>Download</span>
-                      <span>Beat</span>
-                    </>
-                  )}
-                </button>
               )}
             </div>
             <div className="ml-2 inline-block">
@@ -356,7 +277,7 @@ const PageEditor = () => {
                         playerState={audioState.playerState}
                         isMuted={audioState.isMuted}
                         onToggleSound={() => onToggleSound(audioState)}
-                        isSelecting={isForking}
+                        isSelecting={false}
                         isSelected={audioState.selected}
                         onSelectButtonClicked={() => onToggleSelection(audioState)}
                         onFinish={() => setFinishedCounter(prev => prev - 1)}
@@ -384,13 +305,13 @@ const PageEditor = () => {
           setAllState={state => setAllState(state)}
         />
       )}
-      {isDialogForkOpened && nftKey && tokenId && (
-        <ForkDialog
+      {isDialogNftifyOpened && nftKey && tokenId && (
+        <NftifyDialog
           tokenId={tokenId}
           dataKey={nftKey}
-          isOpened={isDialogForkOpened}
-          selectedAudios={forkData}
-          onDialogClosed={() => setIsDialogForkOpened(false)}
+          isOpened={isDialogNftifyOpened}
+          selectedAudios={nftifyData}
+          onDialogClosed={() => setIsDialogNftifyOpened(false)}
         />
       )}
       {isShareDialogShow && nftKey && (
