@@ -10,7 +10,6 @@ import { useAccount } from 'wagmi'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { createMixedAudio, formatDataKey } from 'utils'
 import audioBuffertoWav from 'audiobuffer-to-wav'
-import { check_if_bookmarked } from 'apollo-client'
 import { useParams } from 'react-router-dom'
 import exportImg from 'assets/icons/export.png'
 import { useApi } from 'hooks/use-api'
@@ -97,12 +96,10 @@ const PageEditor = () => {
     }
   }, [nftKey, data, isLoad, rpc, version])
 
-  useEffect(() => {
-    const checkBookmarked = async (tokenId: string) => {
-      const isMinted = await check_if_bookmarked(address ?? '0x', tokenId)
-      setDisplayDownloadButton(isMinted)
-    }
-  }, [nftKey, tokenId])
+  /*  
+   const { data: isMinted } = useCheckBookmarkedSheets(address ?? '0x', tokenId as string)
+   setDisplayDownloadButton(Boolean(isMinted)) 
+  */
 
   const setAllState = (state: PlayerState) => {
     setFilteredData(prev =>
