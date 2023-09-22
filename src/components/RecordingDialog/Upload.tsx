@@ -1,138 +1,139 @@
-import { useContext, useEffect, useState } from 'react';
-import { useAccount, useSignMessage } from 'wagmi';
+import { useContext, useEffect, useState } from 'react'
+import { useAccount, useSignMessage } from 'wagmi'
 // import { add_beat } from '_aqua/music'
-import { LoadingSpinner, PlayIcon, StopIcon } from 'components/Icons/icons';
-import { AlertMessageContext } from 'hooks/use-alert-message';
-import { useApi } from 'hooks/use-api';
-import { useWeb3Auth } from 'hooks/use-web3auth';
-import { useIpfs } from 'hooks/use-ipfs';
+import { LoadingSpinner, PlayIcon, StopIcon } from 'components/Icons/icons'
+import { AlertMessageContext } from 'hooks/use-alert-message'
+import { useApi } from 'hooks/use-api'
+import { useWeb3Auth } from 'hooks/use-web3auth'
+import { useIpfs } from 'hooks/use-ipfs'
 interface UploadProp {
-  audioData: any;
-  dataKey: String;
-  chainId: String;
-  address: String;
-  tokenId: String;
-  version: String;
-  onHandlePlayClicked: () => void;
-  onHandleStopClicked: () => void;
-  onHandleRecordClicked: () => any;
-  onHandleConfirmClicked: () => void;
-  onHandleMuteClicked: (muted: boolean) => void;
-  isRecordedPlaying: boolean;
-  isAllBeatsMuted: boolean;
+  audioData: any
+  dataKey: String
+  chainId: String
+  address: String
+  tokenId: String
+  version: String
+  onHandlePlayClicked: () => void
+  onHandleStopClicked: () => void
+  onHandleRecordClicked: () => any
+  onHandleConfirmClicked: () => void
+  onHandleMuteClicked: (muted: boolean) => void
+  isRecordedPlaying: boolean
+  isAllBeatsMuted: boolean
 }
 
 const Upload = (prop: UploadProp) => {
-  const [audioUrl, setAudioUrl] = useState<string>('');
+  const [audioUrl, setAudioUrl] = useState<string>('')
 
-  const { ipfs } = useIpfs();
-  const { rpc } = useApi();
-  const { publish } = rpc;
+  const { ipfs } = useIpfs()
+  const { rpc } = useApi()
+  const { publish } = rpc
 
-  const { address } = useAccount();
-  const { signMessage: signMessageWeb3Auth, isConnected } = useWeb3Auth();
+  const { address } = useAccount()
+  const { signMessage: signMessageWeb3Auth, isConnected, getAccounts } = useWeb3Auth()
 
   const { signMessageAsync } = useSignMessage({
     onSuccess(signature) {
-      add_new_beat({ signature, chainId: prop.chainId as string, address: address as `0x${string}` });
+      add_new_beat({ signature, chainId: prop.chainId as string, address: address as `0x${string}` })
     },
-  });
+  })
 
-  const { showError, showSuccess } = useContext(AlertMessageContext);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { showError, showSuccess } = useContext(AlertMessageContext)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const add_to_nft = async () => {
-    if (!prop.audioData.blob) return;
+    if (!prop.audioData.blob) return
 
     if (!address && !isConnected()) {
-      showError('Connect your wallet to add beat to NFT');
-      return;
+      showError('Connect your wallet to add beat to NFT')
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
-      const resp = await ipfs.storeBlob(prop.audioData.blob);
-      const url = `${import.meta.env.VITE_IPFS_BEAT_STORAGE_URL}/${resp}`;
-      setAudioUrl(url);
+      const resp = await ipfs.storeBlob(prop.audioData.blob)
+      const url = `${import.meta.env.VITE_IPFS_BEAT_STORAGE_URL}/${resp}`
+      setAudioUrl(url)
     } catch (e: unknown) {
-      const error = e as Error;
-      showError(`${error.message}`);
-      setIsLoading(false);
+      const error = e as Error
+      showError(`${error.message}`)
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     const signMessage = async () => {
       try {
-        await signMessageAsync({ message: audioUrl });
+        await signMessageAsync({ message: audioUrl })
       } catch (e: unknown) {
-        const error = e as Error;
-        showError(`${error.message}`);
-        setIsLoading(false);
-        setAudioUrl('');
+        const error = e as Error
+        showError(`${error.message}`)
+        setIsLoading(false)
+        setAudioUrl('')
       }
-    };
+    }
 
     async function signWeb3AuthMessage() {
       try {
-        const results = await signMessageWeb3Auth(audioUrl);
-        if (!results) throw Error('unable to sign');
+        const results = await signMessageWeb3Auth(audioUrl)
+        if (!results) throw Error('unable to sign')
 
-        const { torusAddress, signature } = results;
+        const { signature } = results
+        const address = await getAccounts()
 
         await add_new_beat({
           signature,
           chainId: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
-          address: torusAddress as `0x${string}`,
-        });
+          address: address as `0x${string}`,
+        })
       } catch (e: unknown) {
-        const error = e as Error;
-        showError(`${error.message}`);
-        setIsLoading(false);
-        setAudioUrl('');
+        const error = e as Error
+        showError(`${error.message}`)
+        setIsLoading(false)
+        setAudioUrl('')
       }
     }
 
     if (audioUrl && address) {
-      signMessage();
+      signMessage()
     } else if (audioUrl && isConnected()) {
-      signWeb3AuthMessage();
+      signWeb3AuthMessage()
     }
-  }, [audioUrl, showError, signMessageAsync]);
+  }, [audioUrl, showError, signMessageAsync])
 
   const add_new_beat = async ({
     chainId,
     address,
     signature,
   }: {
-    chainId: string;
-    address: `0x${string}`;
-    signature: string;
+    chainId: string
+    address: `0x${string}`
+    signature: string
   }) => {
     try {
-      await publish(
-        '',
-        chainId,
-        audioUrl,
-        '',
-        import.meta.env.VITE_META_CONTRACT_ID as String,
-        'metadata',
-        address as `0x${string}`,
+      await publish({
+        alias: '',
+        chain_id: chainId,
+        data: audioUrl,
+        mcdata: '',
+        meta_contract_id: import.meta.env.VITE_META_CONTRACT_ID as string,
+        method: 'metadata',
+        public_key: address,
         signature,
-        prop.address.toString(),
-        prop.tokenId.toString(),
-        prop.version
-      );
+        token_address: prop.address.toString(),
+        token_id: prop.tokenId.toString(),
+        version: prop.version as string,
+      })
     } catch (e: unknown) {
-      console.log(e);
+      console.log(e)
     }
 
-    prop.onHandleConfirmClicked();
-    showSuccess(`Congratulations, you've succeeded in making that terrible sound even more unbearable.`);
-    setIsLoading(false);
-    setAudioUrl('');
-  };
+    prop.onHandleConfirmClicked()
+    showSuccess(`Congratulations, you've succeeded in making that terrible sound even more unbearable.`)
+    setIsLoading(false)
+    setAudioUrl('')
+  }
 
   return (
     <div className="mt-4 flex flex-col items-center justify-center gap-4 text-center text-sm text-white md:text-lg">
@@ -177,7 +178,7 @@ const Upload = (prop: UploadProp) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Upload;
+export default Upload
