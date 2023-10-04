@@ -86,7 +86,7 @@ const ConfirmButton = ({ cid, onForkSuccess }: Props) => {
 
   return (
     <button
-      className="mr-2 bg-green-500 px-5 py-3 text-black"
+      className="mr-2 bg-green-500 px-5 py-3 text-white"
       disabled={isLoading}
       onClick={() => onHandleConfirmClicked()}
     >

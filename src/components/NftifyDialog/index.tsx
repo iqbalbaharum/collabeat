@@ -47,10 +47,10 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
           hidden: !prop.isOpened,
         })}
       >
-        <div className="flex min-h-screen items-center justify-center px-4 py-4 text-center">
-          <div className="z-99 border-gradient inline-block transform overflow-hidden rounded-sm bg-black p-4 shadow-xl transition-all sm:w-full md:max-w-lg">
+        <div className="flex min-h-screen items-center justify-center px-4 py-4 text-center bg-black/70">
+          <div className="z-99 border-gradient inline-block transform overflow-hidden rounded-2xl bg-white pt-4 pb-10 px-4 shadow-xl transition-all w-full md:max-w-lg">
             <div className="">
-              <div className="flex justify-end text-white">
+              <div className="flex justify-end text-black">
                 <XMarkIcon
                   className="h-6 w-6 cursor-pointer"
                   aria-hidden="true"
@@ -59,18 +59,18 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
               </div>
             </div>
             <div className="text-center">
-              <h3 className="Roboto mb-8 text-lg font-medium leading-6 text-[#DCDCDC]" id="modal-headline">
+              <h3 className="Roboto mb-6 text-lg md:text-xl font-medium leading-6 text-gray-800" id="modal-headline">
                 NFTify Sheet
               </h3>
               <div className="mt-2">
-                <p className="Roboto text-xs text-[#DCDCDC]">
+                <p className="Roboto text-xs md:text-sm text-gray-500">
                   You are NFTifying <b>{`${prop.selectedAudios.length}`} beat(s)</b>
                 </p>
               </div>
               <div className="mt-6 flex justify-center">
                 {uploadedCid && <ConfirmButton cid={uploadedCid} onForkSuccess={() => handleSuccess()} />}
                 <button className="bg-red-600 px-5 py-3 text-white" onClick={() => prop.onDialogClosed()}>
-                  CANCEL
+                  Cancel
                 </button>
               </div>
             </div>
