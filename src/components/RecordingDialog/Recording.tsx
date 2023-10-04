@@ -45,7 +45,7 @@ const Recording = (prop: RecordingProp) => {
   }
 
   return (
-    <div className="text-center">
+    <div className="text-center my-16">
       <div className="inter mt-4 text-center text-2xl font-medium text-white">
         <div className="mr-1 inline-block h-4 w-4 rounded-full bg-red-600"></div> Recording{' '}
         <span className="minute">{minute}</span>

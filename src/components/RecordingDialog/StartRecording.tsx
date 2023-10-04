@@ -8,7 +8,7 @@ interface StartRecordingProp {
 
 const StartRecording = (prop: StartRecordingProp) => {
   return (
-    <button className="rounded-full bg-indigo-600 px-5 py-3" onClick={prop.onHandleStartRecordingClicked}>
+    <button className="rounded-full bg-indigo-600 w-3/5 py-3 my-16" onClick={prop.onHandleStartRecordingClicked}>
       Start Recording
     </button>
   )

@@ -8,6 +8,7 @@ import CountdownTimer from './CountDownTimer'
 import StartRecording from './StartRecording'
 import Upload from './Upload'
 import { AudioState, PlayerState } from 'lib'
+import Success from './Success'
 interface RecordingDialogProp {
   dataKey: String
   chainId: String
@@ -179,23 +180,25 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
           hidden: !prop.isOpened,
         })}
       >
-        <div className="mx-10 flex min-h-screen items-end justify-center px-4 py-4 pb-28 text-center text-sm text-white md:text-lg">
-          <div className=" min-w-[16rem] bg-gray-900 px-2 py-4 md:w-full md:max-w-lg md:px-8">
-            <div className="flex justify-end pr-4 md:pr-0">
+        <div className="flex min-h-screen items-center justify-center px-2 py-4 text-center text-sm text-white md:text-lg bg-black/80">
+          <div className=" min-w-[20rem] bg-gray-900 px-2 py-4 md:w-full md:max-w-lg md:px-4">
+            <div className="flex justify-end pr-2 md:pr-0">
               <button
-                className="rounded-md bg-red-600 py-2 px-2  md:px-5  md:hover:scale-105"
+                className="rounded-md bg-red-600 text-sm py-2 px-2 md:px-5 md:hover:scale-105"
                 onClick={() => prop.onDialogClosed()}
               >
                 Close
               </button>
             </div>
-            <div className="border-1 m-1 h-[180px] rounded p-2 text-left">
-              <div className="flex h-full items-center justify-center">
+            <div className="border-1 m-1 rounded p-2 text-left">
+              <div className="flex items-center justify-center">
                 {state == RecordingDialogState.START && (
                   <StartRecording onHandleStartRecordingClicked={onRecordingStart} />
                 )}
                 {state === RecordingDialogState.COUNTDOWN && (
-                  <CountdownTimer onCountdownFinish={() => onCountdownFinished()} />
+                  <div className='my-16'>
+                    <CountdownTimer onCountdownFinish={() => onCountdownFinished()} />
+                  </div>
                 )}
                 {state === RecordingDialogState.RECORD && (
                   <Recording
@@ -206,7 +209,8 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                   />
                 )}
                 {state === RecordingDialogState.UPLOAD && (
-                  <div className="items-center justify-center">
+                  <div className="items-center justify-center w-full">
+                    <div className='py-6'>
                     {audioData.url && (
                       <Waveform
                         url={audioData.url }
@@ -217,6 +221,7 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                         onFinish={() => onStopOneAudio(filteredData[filteredData.length - 1])}
                       />
                     )}
+                    </div>
                     <Upload
                       audioData={audioData}
                       dataKey={prop.dataKey}
@@ -234,6 +239,11 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                     />
                   </div>
                 )}
+                {/* {state === RecordingDialogState.FINISH && (
+                  <Success
+                    onHandleSuccess={}
+                  />
+                )} */}
               </div>
             </div>
           </div>
