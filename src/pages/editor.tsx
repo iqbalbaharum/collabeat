@@ -14,13 +14,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import exportImg from 'assets/icons/export.png'
 import { useApi } from 'hooks/use-api'
 import { useBoundStore } from 'store'
+import { useWeb3Auth } from 'hooks/use-web3auth'
 
 const PageEditor = () => {
   const navigate = useNavigate()
   const { chainId, tokenAddress, version, tokenId } = useParams()
-  const { address } = useAccount()
   const { rpc } = useApi()
   const { nft, setNFTState } = useBoundStore()
+  const { address } = useWeb3Auth()
   // const isOwner = Boolean(address) && nft?.owner?.toLowerCase() === address?.toLowerCase()
   const isOwner = true
 
@@ -171,14 +172,15 @@ const PageEditor = () => {
 
   const [audioContext] = useState(new AudioContext())
 
-  const toggleNftifyMode = () => {
+  const toggleNftifyMode = async () => {
+    console.log(address)
     if (!address) {
       showError('Connect your wallet to nftify this beat')
       return
     }
 
     const selections: SelectedAudio[] = []
-  
+
     filteredData.forEach(audio => {
       selections.push({
         owner: audio.key,
@@ -243,12 +245,12 @@ const PageEditor = () => {
               {isOwner && (
                 <>
                   <button
-                      className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
-                      onClick={() => toggleNftifyMode()}
-                    >
-                      <img className="mb-1" src={exportImg} height={20} width={20} alt="fork" />
-                      <span>NFTify</span>
-                    </button>
+                    className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
+                    onClick={() => toggleNftifyMode()}
+                  >
+                    <img className="mb-1" src={exportImg} height={20} width={20} alt="fork" />
+                    <span>NFTify</span>
+                  </button>
                 </>
               )}
             </div>

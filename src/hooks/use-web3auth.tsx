@@ -1,33 +1,29 @@
-import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base'
+import { ADAPTER_EVENTS, CHAIN_NAMESPACES, CONNECTED_EVENT_DATA, SafeEventEmitterProvider } from '@web3auth/base'
 import { Web3Auth } from '@web3auth/modal'
 import { OpenloginAdapter, OpenloginUserInfo } from '@web3auth/openlogin-adapter'
 import { TorusWalletAdapter } from '@web3auth/torus-evm-adapter'
 import { TorusWalletConnectorPlugin } from '@web3auth/torus-wallet-connector-plugin'
+import { parseEther } from 'ethers'
 import { createContext, useContext, useEffect, useState } from 'react'
-import RPC from 'utils/ethers'
+import RPC, { CallContractMethodArgs } from 'utils/ethers'
 import Web3, { Bytes } from 'web3'
-
-interface WriteContractArgs {
-  contractABI: any
-  contractAddress: string
-  data: any
-  method: string
-}
 
 interface Web3AuthContextInterface {
   isInitiated: boolean
-  torusAddress: string
+  address: string
   web3Auth: Web3Auth | null
   web3: Web3 | undefined
   userInfo: Partial<OpenloginUserInfo> | undefined
+  provider: SafeEventEmitterProvider | null
   initWeb3AuthModal: () => Promise<void>
   connect: () => Promise<void>
   disconnect: () => Promise<void>
   isConnected: () => boolean
   signMessage: (message: string) => Promise<{ signature: string } | undefined>
-  writeContract: (data: WriteContractArgs) => Promise<Bytes | null>
+  callContractMethod: (data: CallContractMethodArgs) => Promise<Bytes | null>
   getAccounts: () => Promise<any>
   getUserInfo: () => Promise<any>
+  getUserBalance: () => Promise<string | undefined>
 }
 
 interface Web3AuthProviderProps {
@@ -49,7 +45,7 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
   const [web3Auth, setWeb3Auth] = useState<Web3Auth | null>(null)
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null)
   const [torusPlugin, setTorusPlugin] = useState<TorusWalletConnectorPlugin>()
-  const [torusAddress, setTorusAddress] = useState<string>('')
+  const [address, setAddress] = useState<string>('')
   const [web3, setWeb3] = useState<Web3>()
   const [isInitiated, setIsInitiated] = useState<boolean>(false)
 
@@ -135,7 +131,9 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
 
   async function disconnect() {
     if (web3Auth) await web3Auth.logout()
+    setProvider(null)
     setUserInfo(undefined)
+    setAddress('')
   }
 
   async function signMessage(message: string) {
@@ -154,20 +152,29 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
     return web3Auth?.status === 'connected'
   }
 
-  async function writeContract(data: WriteContractArgs) {
+  async function callContractMethod({ contractABI, contractAddress, data, method, options }: CallContractMethodArgs) {
     if (!provider) return
 
+    if (options?.value) {
+      options = { value: parseEther(options.value) as any }
+    }
+
     const rpc = new RPC(provider)
-    return await rpc.contractMethod(data)
+    return await rpc.callContractMethod({
+      contractABI,
+      contractAddress,
+      data,
+      method,
+      options,
+    })
   }
 
-  async function getAccounts() {
+  async function getAccounts(): Promise<string> {
     if (!provider) {
-      return
+      return ''
     }
     const rpc = new RPC(provider)
-    const addresses = await rpc.getAccounts()
-    return addresses
+    return rpc.getAccounts()
   }
 
   async function getUserInfo() {
@@ -177,9 +184,21 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
     return user
   }
 
+  async function getUserBalance() {
+    if (!provider) return
+
+    const rpc = new RPC(provider)
+    return await rpc.getBalance()
+  }
+
   useEffect(() => {
-    const web3 = new Web3(provider as any)
-    setWeb3(web3)
+    async function init() {
+      const web3 = new Web3(provider as any)
+      setWeb3(web3)
+      setAddress(await getAccounts())
+    }
+
+    init()
   }, [web3Auth?.connected])
 
   useEffect(() => {
@@ -197,15 +216,17 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
         connect,
         disconnect,
         signMessage,
-        writeContract,
+        callContractMethod,
         isConnected,
         web3Auth,
-        torusAddress,
+        address,
         web3,
         isInitiated,
         userInfo,
         getAccounts,
         getUserInfo,
+        getUserBalance,
+        provider,
       }}
     >
       {children}

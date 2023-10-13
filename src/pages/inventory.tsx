@@ -16,7 +16,7 @@ const PageInventory = () => {
       chain?.network === 'maticmum'
         ? networkToChainId('mumbai')
         : chain?.network
-        ? networkToChainId(chain?.network )
+        ? networkToChainId(chain?.network)
         : '',
   })
 
@@ -38,7 +38,7 @@ const PageInventory = () => {
                     key={index}
                     className="text-sm border border-transparent hover:bg-gray-100 hover:text-black p-2 rounded-lg cursor-pointer"
                     onClick={() => goToNftPage(nft)}
-                  >                  
+                  >
                     <img
                       className="rounded-lg w-full bg-white object-cover h-48 hover:scale-105 transition duration-500"
                       src={(nft.metadata as any).image}

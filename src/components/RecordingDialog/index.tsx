@@ -2,13 +2,12 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import Waveform from 'components/Waveform'
 import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
 import Recording from './Recording'
 import CountdownTimer from './CountDownTimer'
 import StartRecording from './StartRecording'
 import Upload from './Upload'
 import { AudioState, PlayerState } from 'lib'
-import Success from './Success'
+import { useWeb3Auth } from 'hooks/use-web3auth'
 interface RecordingDialogProp {
   dataKey: String
   chainId: String
@@ -31,12 +30,12 @@ export enum RecordingDialogState {
 
 const RecordingDialog = (prop: RecordingDialogProp) => {
   const [state, setState] = useState<RecordingDialogState>(RecordingDialogState.START)
-  const [audioData, setAudioData] = useState<{blob: Blob | null, url: string}>({
+  const [audioData, setAudioData] = useState<{ blob: Blob | null; url: string }>({
     blob: null,
     url: '',
   })
   const [filteredData, setFilteredData] = useState<Array<AudioState>>([])
-  const { address } = useAccount()
+  const { address } = useWeb3Auth()
 
   const [isAllBeatsMuted, setIsAllBeatsMuted] = useState(false)
 
@@ -196,7 +195,7 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                   <StartRecording onHandleStartRecordingClicked={onRecordingStart} />
                 )}
                 {state === RecordingDialogState.COUNTDOWN && (
-                  <div className='my-16'>
+                  <div className="my-16">
                     <CountdownTimer onCountdownFinish={() => onCountdownFinished()} />
                   </div>
                 )}
@@ -210,17 +209,17 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                 )}
                 {state === RecordingDialogState.UPLOAD && (
                   <div className="items-center justify-center w-full">
-                    <div className='py-6'>
-                    {audioData.url && (
-                      <Waveform
-                        url={audioData.url }
-                        playerState={filteredData[filteredData.length - 1].playerState}
-                        isMuted={filteredData[filteredData.length - 1].isMuted}
-                        onToggleSound={() => onToggleSound(filteredData[filteredData.length - 1])}
-                        isMuteButtonHidden={true}
-                        onFinish={() => onStopOneAudio(filteredData[filteredData.length - 1])}
-                      />
-                    )}
+                    <div className="py-6">
+                      {audioData.url && (
+                        <Waveform
+                          url={audioData.url}
+                          playerState={filteredData[filteredData.length - 1].playerState}
+                          isMuted={filteredData[filteredData.length - 1].isMuted}
+                          onToggleSound={() => onToggleSound(filteredData[filteredData.length - 1])}
+                          isMuteButtonHidden={true}
+                          onFinish={() => onStopOneAudio(filteredData[filteredData.length - 1])}
+                        />
+                      )}
                     </div>
                     <Upload
                       audioData={audioData}

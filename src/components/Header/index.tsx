@@ -1,16 +1,16 @@
 import React from 'react'
 import { Disclosure } from '@headlessui/react'
 
-import logo from 'assets/img/logo.png'
-import {Link} from 'react-router-dom'
-import { ConnectedWalletInfo } from './ConnectedWalletInfo';
-import { useBoundStore } from 'store'
-import { useConnectedWallet } from 'hooks/use-connected-wallet'
+import { Link } from 'react-router-dom'
+import { ConnectedWalletInfo } from './ConnectedWalletInfo'
+import { useWeb3Auth } from 'hooks/use-web3auth'
 
 export default function Header() {
+  const { connect, isConnected } = useWeb3Auth()
 
-  const { setModalState, current } = useBoundStore();
-  useConnectedWallet();
+  const onClickLogin = async () => {
+    await connect()
+  }
 
   return (
     <Disclosure as="nav" className="bg-transparent">
@@ -25,11 +25,11 @@ export default function Header() {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {current.chain ? (
+            {isConnected() ? (
               <ConnectedWalletInfo />
             ) : (
               <button
-                onClick={() => setModalState({ signUpMain: { isOpen: true } })}
+                onClick={() => onClickLogin()}
                 className="rounded-sm bg-gradient-to-t from-[#7224A7] to-[#FF3065] px-4 py-2"
               >
                 Connect Wallet
