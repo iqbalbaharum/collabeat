@@ -1,11 +1,24 @@
-import ConnectWallet from 'components/Connect/ConnectWallet';
-import { useConnectedWallet } from 'hooks/use-connected-wallet';
-import { useBoundStore } from 'store';
-import { CURRENT_CHAIN } from 'store/slices/wallet.slice';
+import ConnectWallet from 'components/Connect/ConnectWallet'
+import { useWeb3Auth } from 'hooks/use-web3auth'
+import { useEffect, useState } from 'react'
+import { useBoundStore } from 'store'
+import { CURRENT_CHAIN } from 'store/slices/wallet.slice'
+import { abbreviateETHBalance, shortenAddress } from 'utils'
 
 export function ConnectedWalletInfo() {
-  const { current } = useBoundStore();
-  const { disconnect, address, balance } = useConnectedWallet();
+  const { current } = useBoundStore()
+  const { disconnect, getUserBalance, isConnected, address } = useWeb3Auth()
+
+  const [balance, setBalance] = useState('')
+
+  useEffect(() => {
+    async function init() {
+      let balance = await getUserBalance()
+      setBalance(abbreviateETHBalance(parseFloat(balance as string)))
+    }
+
+    if (isConnected()) init()
+  }, [isConnected])
 
   return (
     <>
@@ -41,8 +54,8 @@ export function ConnectedWalletInfo() {
       <SolanaIcon /> */}
 
       <div className="flex rounded-lg bg-[#1A1B1F]">
-        <p className="px-4 py-2">{`${balance.formatted} ${balance.symbol}`}</p>
-        <p className="rounded-lg bg-[#38393C] px-4 py-2 font-bold"> {address.display}</p>
+        <p className="px-4 py-2">{`${balance ?? '0'} ${'MATIC'}`}</p>
+        <p className="rounded-lg bg-[#38393C] px-4 py-2 font-bold"> {`${shortenAddress(address) ?? '-'}`}</p>
       </div>
       <button
         style={{
@@ -57,5 +70,5 @@ export function ConnectedWalletInfo() {
         Disconnect
       </button>
     </>
-  );
+  )
 }

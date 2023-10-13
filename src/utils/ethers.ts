@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { SafeEventEmitterProvider } from '@web3auth/base'
 import { ethers } from 'ethers'
 
-type CallMethodArgs = {
-  contractABI: string
+export type CallContractMethodArgs = {
+  contractABI: any[]
   contractAddress: string
   data: string[]
   method: string
+  options?: {
+    value: string
+  }
 }
 
 export default class EthereumRpc {
-  private provider: any
+  private provider: SafeEventEmitterProvider
 
-  constructor(provider: any) {
+  constructor(provider: SafeEventEmitterProvider) {
     this.provider = provider
   }
 
@@ -29,22 +33,11 @@ export default class EthereumRpc {
   }
 
   async getAccounts(): Promise<any> {
-    try {
-      // For ethers v5
-      // const ethersProvider = new ethers.providers.Web3Provider(this.provider);
-      const ethersProvider = new ethers.BrowserProvider(this.provider)
+    const ethersProvider = new ethers.BrowserProvider(this.provider)
+    const signer = await ethersProvider.getSigner()
+    const address = signer.getAddress()
 
-      // For ethers v5
-      // const signer = ethersProvider.getSigner();
-      const signer = await ethersProvider.getSigner()
-
-      // Get user's Ethereum public address
-      const address = signer.getAddress()
-
-      return await address
-    } catch (error) {
-      return error
-    }
+    return address
   }
 
   async getBalance(): Promise<string> {
@@ -75,22 +68,24 @@ export default class EthereumRpc {
     }
   }
 
-  async contractMethod({ contractABI, contractAddress, data, method }: CallMethodArgs): Promise<any> {
-    try {
-      const ethersProvider = new ethers.BrowserProvider(this.provider)
-      const signer = await ethersProvider.getSigner()
-      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+  async callContractMethod({
+    contractABI,
+    contractAddress,
+    data,
+    method,
+    options,
+  }: CallContractMethodArgs): Promise<any> {
+    const ethersProvider = new ethers.BrowserProvider(this.provider)
+    const signer = await ethersProvider.getSigner()
+    const contract = new ethers.Contract(contractAddress, contractABI, signer)
 
-      // Submit transaction to the blockchain
-      const tx = await contract[method](...data)
+    // Submit transaction to the blockchain
+    const tx = await contract[method](...data, options)
 
-      // Wait for transaction to be mined
-      const receipt = await tx.wait()
+    // Wait for transaction to be mined
+    const receipt = await tx.wait()
 
-      return receipt
-    } catch (error) {
-      return error as string
-    }
+    return receipt
   }
 
   async signMessage(message: string) {

@@ -1,7 +1,5 @@
-
 import { useContext, useEffect, useState } from 'react'
-import { useAccount, useSignMessage } from 'wagmi'
-// import { add_beat } from '_aqua/music'
+import { useSignMessage } from 'wagmi'
 import { LoadingSpinner, PlayIcon, StopIcon } from 'components/Icons/icons'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { useApi } from 'hooks/use-api'
@@ -31,8 +29,7 @@ const Upload = (prop: UploadProp) => {
   const { rpc } = useApi()
   const { publish } = rpc
 
-  const { address } = useAccount()
-  const { signMessage: signMessageWeb3Auth, isConnected, getAccounts } = useWeb3Auth()
+  const { signMessage: signMessageWeb3Auth, isConnected, address } = useWeb3Auth()
 
   const { signMessageAsync } = useSignMessage({
     onSuccess(signature) {
@@ -46,7 +43,7 @@ const Upload = (prop: UploadProp) => {
   const add_to_nft = async () => {
     if (!prop.audioData.blob) return
 
-    if (!address && !isConnected()) {
+    if (!isConnected()) {
       showError('Connect your wallet to add beat to NFT')
       return
     }
@@ -82,7 +79,6 @@ const Upload = (prop: UploadProp) => {
         if (!results) throw Error('unable to sign')
 
         const { signature } = results
-        const address = await getAccounts()
 
         await add_new_beat({
           signature,
@@ -140,7 +136,7 @@ const Upload = (prop: UploadProp) => {
   return (
     <div className="mt-4 flex flex-col  gap-4 text-center text-sm text-white md:text-lg">
       <div className="flex justify-between">
-        <div className='flex items-center gap-x-2'>
+        <div className="flex items-center gap-x-2">
           <div>
             {prop.isRecordedPlaying ? (
               <button
@@ -164,18 +160,27 @@ const Upload = (prop: UploadProp) => {
               className="rounded-md bg-[#577192] py-3 px-2 md:px-4 text-sm md:hover:scale-105"
               onClick={() => prop.onHandleMuteClicked(!prop.isAllBeatsMuted)}
             >
-              <span className='flex items-center gap-x-2'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+              <span className="flex items-center gap-x-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z"
+                  />
                 </svg>
-                <span className="hidden md:block">
-                  {prop.isAllBeatsMuted ? 'Unmute Beats' : 'Mute Beats'}
-                </span>
+                <span className="hidden md:block">{prop.isAllBeatsMuted ? 'Unmute Beats' : 'Mute Beats'}</span>
               </span>
             </button>
           </div>
         </div>
-  
+
         <button
           className="from-20% rounded-md bg-gradient-to-t from-[#7224A7] to-[#FF3065] py-2 px-2 md:px-5 md:hover:scale-105 text-sm"
           onClick={prop.onHandleRecordClicked}
@@ -185,11 +190,11 @@ const Upload = (prop: UploadProp) => {
       </div>
 
       <button
-          className=" rounded-md bg-[#FF9E2D] py-8 px-2 md:px-5 md:hover:scale-105 my-3 text-sm"
-          disabled={isLoading}
-          onClick={() => add_to_nft()}
-        >
-          {isLoading ? <LoadingSpinner /> : 'Add Beat to NFT'}
+        className=" rounded-md bg-[#FF9E2D] py-8 px-2 md:px-5 md:hover:scale-105 my-3 text-sm"
+        disabled={isLoading}
+        onClick={() => add_to_nft()}
+      >
+        {isLoading ? <LoadingSpinner /> : 'Add Beat to NFT'}
       </button>
 
       {/* <div className="grid gap-2 text-sm">
@@ -212,4 +217,3 @@ const Upload = (prop: UploadProp) => {
 }
 
 export default Upload
-
