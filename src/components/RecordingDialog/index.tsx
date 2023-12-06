@@ -8,70 +8,42 @@ import StartRecording from './StartRecording'
 import Upload from './Upload'
 import { AudioState, PlayerState } from 'lib'
 import { useWeb3Auth } from 'hooks/use-web3auth'
+import NewRecording from './New'
+import useMediaAccess from './hooks/useMediaAccess'
+import { useAudioDialog } from './hooks/useAudioDialog'
+import { RecordingDialogState } from 'lib/RecordingDialogState'
+import { useAudioList } from 'hooks/useAudioList'
+import { useBoundStore } from 'store'
 interface RecordingDialogProp {
   dataKey: String
   chainId: String
   address: String
   tokenId: String
   version: String
-  isOpened: boolean
-  onDialogClosed: () => void
-  setAllMuted: (muted: boolean) => void
-  setAllState: (state: PlayerState) => void
-}
-
-export enum RecordingDialogState {
-  START,
-  COUNTDOWN,
-  RECORD,
-  UPLOAD,
-  FINISH,
 }
 
 const RecordingDialog = (prop: RecordingDialogProp) => {
-  const [state, setState] = useState<RecordingDialogState>(RecordingDialogState.START)
-  const [audioData, setAudioData] = useState<{ blob: Blob | null; url: string }>({
-    blob: null,
-    url: '',
-  })
-  const [filteredData, setFilteredData] = useState<Array<AudioState>>([])
+  const { mediaStream, audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess } = useMediaAccess()
+  const { onRecordingStart, onRecordingFinished } = useAudioDialog()
+  const { setAllMuted, filteredData, setFilteredData } = useAudioList()
+  const { modal, setModalState } = useBoundStore()
+  const { dialogState } = useAudioDialog()
   const { address } = useWeb3Auth()
 
   const [isAllBeatsMuted, setIsAllBeatsMuted] = useState(false)
 
-  const onHandleConfirmClicked = () => {
-    prop.onDialogClosed()
+  const onHandleConfirmClicked = () => {}
+
+  const onHandleDialogClosed = () => {
+    setModalState({ audioRecording: { isOpen: false } })
   }
 
   const onHandleMuteClicked = (muted: boolean) => {
-    prop.setAllMuted(muted)
+    setAllMuted(muted)
     setIsAllBeatsMuted(muted)
   }
-  async function onRecordingStart() {
-    try {
-      await getMicrophoneAccess()
-      setState(RecordingDialogState.COUNTDOWN)
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
-  const onRecordingFinished = () => {
-    mediaRecorder?.stop()
-
-    if (audioData) {
-      setState(RecordingDialogState.UPLOAD)
-    } else {
-      setState(RecordingDialogState.START)
-    }
-    removeMicrophoneAccess()
-    prop.setAllState(PlayerState.STOP)
-  }
-
-  const onCountdownFinished = () => {
-    setState(RecordingDialogState.RECORD)
-    prop.setAllState(PlayerState.PLAY)
-  }
+  const onHandleRecord = () => {}
 
   useEffect(() => {
     const filtered = []
@@ -97,117 +69,43 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
     setFilteredData(updatedData)
   }
 
-  const onPlayOneAudio = (state: AudioState) => {
-    const index = filteredData.findIndex(item => item.key === state.key)
-    const updatedData = [...filteredData]
-
-    updatedData[index] = {
-      ...updatedData[index],
-      playerState: PlayerState.PLAY,
-    }
-
-    setFilteredData(updatedData)
-    prop.setAllState(PlayerState.PLAY)
-  }
-
-  const onStopOneAudio = (state: AudioState) => {
-    const index = filteredData.findIndex(item => item.key === state.key)
-    const updatedData = [...filteredData]
-
-    updatedData[index] = {
-      ...updatedData[index],
-      playerState: PlayerState.STOP,
-    }
-
-    setFilteredData(updatedData)
-    prop.setAllState(PlayerState.STOP)
-  }
-
-  const [mediaStream, setMediaStream] = useState<MediaStream>()
-  const [chunks, setChunks] = useState<Blob[]>([])
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
-
-  const getMicrophoneAccess = async () => {
-    try {
-      const constraints = {
-        audio: { autoGainControl: false, echoCancellation: false, noiseSuppression: false },
-        video: false,
-      }
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
-
-      const recorder = new MediaRecorder(stream)
-      setChunks([])
-
-      recorder.ondataavailable = event => {
-        setChunks(prev => [...prev, event.data])
-      }
-
-      setMediaRecorder(recorder)
-      setMediaStream(stream)
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
-  const removeMicrophoneAccess = () => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop())
-      setMediaStream(undefined)
-    }
-  }
-
-  useEffect(() => {
-    if (mediaRecorder && state === RecordingDialogState.RECORD) mediaRecorder.start()
-  }, [state])
-
-  useEffect(() => {
-    if (chunks.length > 0) {
-      const blob = new Blob(chunks, { type: 'audio/mpeg' })
-      const url = URL.createObjectURL(blob)
-      setAudioData({
-        blob,
-        url,
-      })
-    }
-  }, [chunks])
-
   return (
     <>
       <div
         className={classNames('fixed inset-0 z-10 overflow-y-auto', {
-          hidden: !prop.isOpened,
+          hidden: !modal.audioRecording.isOpen,
         })}
       >
-        <div className="flex min-h-screen items-center justify-center px-2 py-4 text-center text-sm text-white md:text-lg bg-black/80">
-          <div className=" min-w-[20rem] bg-gray-900 px-2 py-4 md:w-full md:max-w-lg md:px-4">
+        <div className="flex min-h-screen items-center justify-center text-center text-sm text-white md:text-lg bg-black/80">
+          <div className="w-full h-screen bg-gray-900 px-2 py-4 md:px-4">
             <div className="flex justify-end pr-2 md:pr-0">
               <button
                 className="rounded-md bg-red-600 text-sm py-2 px-2 md:px-5 md:hover:scale-105"
-                onClick={() => prop.onDialogClosed()}
+                onClick={onHandleDialogClosed}
               >
                 Close
               </button>
             </div>
-            <div className="border-1 m-1 rounded p-2 text-left">
+            <div className="border-1 rounded p-2 text-left">
               <div className="flex items-center justify-center">
-                {state == RecordingDialogState.START && (
+                <NewRecording />
+                {/* {dialogState == RecordingDialogState.START && (
                   <StartRecording onHandleStartRecordingClicked={onRecordingStart} />
                 )}
-                {state === RecordingDialogState.COUNTDOWN && (
+                {dialogState === RecordingDialogState.COUNTDOWN && (
                   <div className="my-16">
                     <CountdownTimer onCountdownFinish={() => onCountdownFinished()} />
                   </div>
                 )}
-                {state === RecordingDialogState.RECORD && (
-                  <Recording
-                    state={state}
-                    onHandleStopRecordingClicked={() => onRecordingFinished()}
-                    setAudioData={setAudioData}
-                    mediaStream={mediaStream}
-                  />
+                {dialogState === RecordingDialogState.RECORD && (
+                  // <Recording
+                  //   state={state}
+                  //   onHandleStopRecordingClicked={() => onRecordingFinished()}
+                  //   mediaStream={mediaStream}
+                  // />
+                  <NewRecording />
                 )}
-                {state === RecordingDialogState.UPLOAD && (
+                {dialogState === RecordingDialogState.UPLOAD && (
                   <div className="items-center justify-center w-full">
                     <div className="py-6">
                       {audioData.url && (
@@ -237,7 +135,7 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
                       onHandleStopClicked={() => onStopOneAudio(filteredData[filteredData.length - 1])}
                     />
                   </div>
-                )}
+                )} */}
                 {/* {state === RecordingDialogState.FINISH && (
                   <Success
                     onHandleSuccess={}

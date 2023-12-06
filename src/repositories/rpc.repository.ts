@@ -33,14 +33,18 @@ export async function parseString(input: string): Promise<DataTypeMetadata | Dat
   try {
     const parsed = JSON.parse(input)
     if (typeof parsed === 'object') return { type: 'metadata', data: parsed }
-  } catch (e) {}
+  } catch (e) {
+    /* empty */
+  }
 
   try {
     const response = await fetch(input)
     const contentType = response.headers.get('content-type')
     if (contentType?.startsWith('image/')) return { type: 'image', data: input }
     if (contentType?.startsWith('audio/')) return { type: 'audio', data: input }
-  } catch (e) {}
+  } catch (e) {
+    /* empty */
+  }
 
   return { type: 'none', data: input }
 }
@@ -62,8 +66,9 @@ const usePublishTransaction = () => {
     mutationFn: async (data: Transaction) => {
       return await rpc.publish(data)
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       let timeout: NodeJS.Timeout
+      // eslint-disable-next-line prefer-const
       timeout = setTimeout(async () => {
         await queryClient.invalidateQueries([RQ_KEY.GET_POSTS])
         if (timeout) clearTimeout(timeout)
@@ -88,7 +93,7 @@ const useGetPosts = (nft_key: string) => {
   return useQuery({
     queryKey: [RQ_KEY.GET_POSTS],
     queryFn: async () => {
-      const result = await rpc.searchMetadatas(nft_key, `${import.meta.env.VITE_WEB3WALL_META_CONTRACT_ID}`)
+      const result = await rpc.searchMetadatas(nft_key, `${import.meta.env.VITE_META_CONTRACT_ID}`)
 
       const promises = result?.map(async (curr: any) => {
         const res = await rpc.getContentFromIpfs(curr.cid as string)
@@ -109,4 +114,36 @@ const useGetPosts = (nft_key: string) => {
   })
 }
 
-export { useGetCompleteTransactions, useGetTransactions, usePublishTransaction, useStoreBlob, useGetPosts }
+const useGetMetadataBlock = (nftKey: string) => {
+  return useQuery({
+    queryKey: [RQ_KEY.GET_METADATA_BY_BLOCK, nftKey],
+    queryFn: async () => {
+      const result = await rpc.searchMetadatas(nftKey, `${import.meta.env.VITE_META_CONTRACT_ID}`)
+
+      const promises = result?.map(async (curr: any) => {
+        const res = await rpc.getContentFromIpfs(curr.cid as string)
+        const content = JSON.parse(res.data.result.content as string)
+        const data = content.content as { text: string; image: string }
+
+        return {
+          ...data,
+          public_key: curr.public_key,
+          timestamp: content.timestamp as number,
+        }
+      })
+
+      const results = await Promise.all(promises)
+
+      return results
+    },
+  })
+}
+
+export {
+  useGetCompleteTransactions,
+  useGetTransactions,
+  usePublishTransaction,
+  useStoreBlob,
+  useGetPosts,
+  useGetMetadataBlock,
+}

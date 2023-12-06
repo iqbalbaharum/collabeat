@@ -5,30 +5,32 @@ import { SelectedAudio } from 'lib'
 import { useContext, useEffect, useState } from 'react'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import ConfirmButton from './ConfirmButton'
+import { useBoundStore } from 'store'
 
 interface NftifyDialogProp {
   tokenId: String
   dataKey: String
-  isOpened: boolean
-  onDialogClosed: () => void
-  selectedAudios: SelectedAudio[]
 }
 
 const NftifyDialog = (prop: NftifyDialogProp) => {
   const [uploadedCid, setUplodedCid] = useState('')
   const { showSuccess } = useContext(AlertMessageContext)
-
+  const { modal, setModalState } = useBoundStore()
   const { ipfsFork } = useIpfs()
 
   function handleSuccess() {
     showSuccess('Congrats on your first cool achievement')
-    prop.onDialogClosed()
+    onDialogClosed()
+  }
+
+  const onDialogClosed = () => {
+    setModalState({ nftify: { isOpen: false, selections: [] } })
   }
 
   useEffect(() => {
     const uploadToIpfs = async () => {
       try {
-        const cid = await ipfsFork.dag.put(prop.selectedAudios)
+        const cid = await ipfsFork.dag.put(modal.nftify.selections)
         setUplodedCid(cid.toString())
       } catch (e) {
         console.log(e)
@@ -44,18 +46,14 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
     <>
       <div
         className={classNames('fixed inset-0 z-10 overflow-y-auto', {
-          hidden: !prop.isOpened,
+          hidden: !modal.nftify.isOpen,
         })}
       >
         <div className="flex min-h-screen items-center justify-center px-4 py-4 text-center bg-black/70">
           <div className="z-99 border-gradient inline-block transform overflow-hidden rounded-2xl bg-white pt-4 pb-10 px-4 shadow-xl transition-all w-full md:max-w-lg">
             <div className="">
               <div className="flex justify-end text-black">
-                <XMarkIcon
-                  className="h-6 w-6 cursor-pointer"
-                  aria-hidden="true"
-                  onClick={() => prop.onDialogClosed()}
-                />
+                <XMarkIcon className="h-6 w-6 cursor-pointer" aria-hidden="true" onClick={onDialogClosed} />
               </div>
             </div>
             <div className="text-center">
@@ -64,12 +62,12 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
               </h3>
               <div className="mt-2">
                 <p className="Roboto text-xs md:text-sm text-gray-500">
-                  You are NFTifying <b>{`${prop.selectedAudios.length}`} beat(s)</b>
+                  You are NFTifying <b>{`${modal.nftify.selections.length}`} beat(s)</b>
                 </p>
               </div>
               <div className="mt-6 flex justify-center">
-                {uploadedCid && <ConfirmButton cid={uploadedCid} onForkSuccess={() => handleSuccess()} />}
-                <button className="bg-red-600 px-5 py-3 text-white" onClick={() => prop.onDialogClosed()}>
+                {/* {uploadedCid && <ConfirmButton cid={uploadedCid} onForkSuccess={() => handleSuccess()} />} */}
+                <button className="bg-red-600 px-5 py-3 text-white" onClick={onDialogClosed}>
                   Cancel
                 </button>
               </div>

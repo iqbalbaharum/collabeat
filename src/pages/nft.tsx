@@ -26,7 +26,7 @@ const PageNft = () => {
       const nftKey = formatDataKey(nft.chain_id as String, nft.token_address as String, nft.token_id as String)
 
       const response = await rpc.getMetadataUseKeyByBlock(nftKey, import.meta.env.VITE_META_CONTRACT_ID as String, '')
-
+      console.log(nftKey, import.meta.env.VITE_META_CONTRACT_ID as String, response.data)
       const metadatas = response.data.result.metadatas as Metadata[]
 
       const uniqueVersions: String[] = []
@@ -137,11 +137,12 @@ const PageNft = () => {
                   <div>
                     <div className="flex text-gray-400 text-sm my-2">
                       <div className="">
-                        <span className='truncate block min-w-64 w-72 md:inline'>Address: {nft.token_address}</span><span className="mx-3">&#8226;</span> #{nft.token_id}{' '}
-                        <span className="mx-3">&#8226;</span> <ChainName chainId="56" />
+                        <span className="truncate block min-w-64 w-72 md:inline">Address: {nft.token_address}</span>
+                        <span className="mx-3">&#8226;</span> #{nft.token_id} <span className="mx-3">&#8226;</span>{' '}
+                        <ChainName chainId="56" />
                       </div>
                     </div>
-                    
+
                     <p className="">{nft.metadata.description}</p>
                   </div>
                 </div>

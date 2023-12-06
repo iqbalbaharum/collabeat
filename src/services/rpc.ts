@@ -1,4 +1,5 @@
 import rpc from 'adapter/jsonrpc'
+import { Metadata } from 'lib'
 import { formatDataKey } from 'utils'
 
 export type RPCResponse<T> = {
@@ -65,8 +66,8 @@ const getMetadataAllVersion = (chain: String, address: String, token_id: String)
   })
 }
 
-const getMetadataUseKeyByBlock = (nftKey: String, meta_contract_id: String, version: String) => {
-  return rpc({
+const getMetadataUseKeyByBlock = async (nftKey: String, meta_contract_id: String, version: String) => {
+  const response = await rpc({
     method: 'POST',
     data: JSON.stringify({
       jsonrpc: '2.0',
@@ -75,6 +76,28 @@ const getMetadataUseKeyByBlock = (nftKey: String, meta_contract_id: String, vers
       id: '1',
     }),
   })
+
+  return response.data?.result as Metadata[]
+}
+
+const getMetadata = async (
+  nftKey: String,
+  metaContractId: String,
+  publicKey: String,
+  alias: String,
+  version: String
+) => {
+  const response = await rpc({
+    method: 'POST',
+    data: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'get_metadata',
+      params: [nftKey, metaContractId, publicKey, alias, version],
+      id: '1',
+    }),
+  })
+
+  return response.data?.result?.metadata as Metadata
 }
 
 const searchMetadatas = async (nftKey: String, meta_contract_id: String) => {
@@ -203,6 +226,7 @@ const getTransactions = async (filter: JSONRPCFilter<Transaction>) => {
 export default {
   getMetadataAllVersion,
   getMetadataUseKeyByBlock,
+  getMetadata,
   getContentFromIpfs,
   publish,
   getMetaContractById,

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { RecordingDialogState } from '.'
+import { RecordingDialogState } from 'lib/RecordingDialogState'
+import { useAudioDialog } from './hooks/useAudioDialog'
 
 interface RecordingProp {
   state: RecordingDialogState
   onHandleStopRecordingClicked: () => any
-  setAudioData: (obj: any) => void
   mediaStream: MediaStream | undefined
 }
 
@@ -12,6 +12,8 @@ const Recording = (prop: RecordingProp) => {
   const [second, setSecond] = useState('00')
   const [minute, setMinute] = useState('00')
   const [timer, setTimer] = useState(0)
+
+  const { dialogState } = useAudioDialog()
 
   useEffect(() => {
     let intervalIdTime: NodeJS.Timer
@@ -52,6 +54,7 @@ const Recording = (prop: RecordingProp) => {
         <span>:</span>
         <span className="second">{second}</span>
       </div>
+
       <button
         className="mt-3 inline-flex items-center gap-2 rounded-full bg-indigo-600 bg-indigo-600 px-5 py-3 px-8 text-white"
         onClick={onHandleStop}
