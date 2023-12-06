@@ -1,6 +1,7 @@
 import { Beat } from 'lib/Beat'
 import { useEffect, useRef, useState } from 'react'
 import * as Tone from 'tone'
+import { useAudioDialog } from './hooks/useAudioDialog'
 
 interface Prop {
   color: string
@@ -8,8 +9,10 @@ interface Prop {
   beat: Beat
 }
 const BeatButton = (prop: Prop) => {
-  const [isLoaded, setIsLoaded] = useState(false)
   const [isActive, setIsActive] = useState(false)
+
+  const { mediaStream } = useAudioDialog()
+
   const player = useRef<Tone.Player>(new Tone.Player({ url: prop.beat.url, loop: true }).toDestination())
 
   const onHandleClicked = () => {
@@ -22,7 +25,11 @@ const BeatButton = (prop: Prop) => {
     } else {
       player.current?.stop()
     }
-  }, [isActive])
+
+    if (mediaStream) {
+      player.current.connect(mediaStream)
+    }
+  }, [isActive, mediaStream])
 
   return (
     <button

@@ -8,7 +8,8 @@ interface AudioDialogContextProps {
   dialogState: RecordingDialogState
   audioData: any
   audioRef: any
-  onRecordingStart?: () => void
+  mediaStream: any
+  onRecordingStart: (voiceFlag: boolean) => void
   onRecordingFinished: () => void
   onCountdownFinished: () => void
   onDialogClosed: () => void
@@ -30,16 +31,27 @@ export const useAudioDialog = () => {
 
 export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
   const [dialogState, setDialogState] = useState<RecordingDialogState>(RecordingDialogState.START)
-  const { audioRef, audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess, clear } = useMediaAccess()
+  const [isVoice, setIsVoice] = useState(false)
+  const { audioRef, mediaStream, audioData, mediaRecorder, initTone, initVoiceAccess, deinitVoiceAccess, clear } =
+    useMediaAccess()
   const { setAllState } = useAudioList()
 
-  const onRecordingStart = () => {
+  const onRecordingStart = (voiceFlag: boolean) => {
+    setIsVoice(voiceFlag)
+    if (isVoice) {
+      initVoiceAccess().catch(console.log)
+    } else {
+      initTone()
+    }
     setDialogState(RecordingDialogState.COUNTDOWN)
   }
 
   const onRecordingFinished = () => {
     if (audioData) {
       setDialogState(RecordingDialogState.UPLOAD)
+      if (isVoice) {
+        deinitVoiceAccess()
+      }
     } else {
       setDialogState(RecordingDialogState.START)
     }
@@ -56,11 +68,9 @@ export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
   useEffect(() => {
     switch (dialogState) {
       case RecordingDialogState.COUNTDOWN:
-        getMicrophoneAccess().catch(console.log)
         break
       case RecordingDialogState.UPLOAD:
         mediaRecorder?.stop()
-        removeMicrophoneAccess()
         setAllState(PlayerState.STOP)
         break
       case RecordingDialogState.RECORD:
@@ -69,7 +79,9 @@ export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
   }, [dialogState])
 
   useEffect(() => {
-    if (mediaRecorder && dialogState === RecordingDialogState.RECORD) mediaRecorder.start()
+    if (mediaRecorder && dialogState === RecordingDialogState.RECORD) {
+      mediaRecorder.start()
+    }
   }, [dialogState, mediaRecorder])
 
   return (
@@ -77,6 +89,7 @@ export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
       value={{
         audioRef,
         audioData,
+        mediaStream,
         onCountdownFinished,
         dialogState,
         onRecordingStart,

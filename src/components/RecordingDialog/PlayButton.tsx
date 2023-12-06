@@ -16,7 +16,8 @@ const PlayButton = () => {
 
   const onHandleStopClicked = () => {
     if (audioRef) {
-      audioRef.current.paused()
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
       setIsRecordedPlaying(false)
     }
   }

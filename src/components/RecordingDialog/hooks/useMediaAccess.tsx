@@ -1,16 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
+import * as Tone from 'tone'
 
 const useMediaAccess = () => {
-  const [mediaStream, setMediaStream] = useState<MediaStream>()
+  const [mediaStream, setMediaStream] = useState<any>()
   const [chunks, setChunks] = useState<Blob[]>([])
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | Tone.Recorder | null>(null)
   const [audioData, setAudioData] = useState<{ blob: Blob | null; url: string }>({
     blob: null,
     url: '',
   })
   const audioRef = useRef(new Audio())
 
-  const getMicrophoneAccess = async () => {
+  const initTone = () => {
+    const audioContext = Tone.getContext()
+    const mediaStreamDestination = audioContext.createMediaStreamDestination()
+    const recorder = new MediaRecorder(mediaStreamDestination.stream)
+    setChunks([])
+
+    recorder.ondataavailable = event => {
+      setChunks(prev => [...prev, event.data])
+    }
+
+    setMediaRecorder(recorder)
+    setMediaStream(mediaStreamDestination)
+  }
+
+  const initVoiceAccess = async () => {
     try {
       const constraints = {
         audio: { autoGainControl: false, echoCancellation: false, noiseSuppression: false },
@@ -33,9 +48,9 @@ const useMediaAccess = () => {
     }
   }
 
-  const removeMicrophoneAccess = () => {
+  const deinitVoiceAccess = () => {
     if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop())
+      mediaStream.getTracks().forEach((track: { stop: () => any }) => track.stop())
       setMediaStream(undefined)
     }
   }
@@ -53,7 +68,7 @@ const useMediaAccess = () => {
 
   useEffect(() => {
     if (chunks.length > 0) {
-      const blob = new Blob(chunks, { type: 'audio/mpeg' })
+      const blob = new Blob(chunks, { type: 'audio/wav' })
       const url = URL.createObjectURL(blob)
       setAudioData({
         blob,
@@ -64,7 +79,7 @@ const useMediaAccess = () => {
     }
   }, [chunks])
 
-  return { audioRef, mediaStream, mediaRecorder, audioData, getMicrophoneAccess, removeMicrophoneAccess, clear }
+  return { audioRef, mediaStream, mediaRecorder, audioData, initTone, initVoiceAccess, deinitVoiceAccess, clear }
 }
 
 export default useMediaAccess

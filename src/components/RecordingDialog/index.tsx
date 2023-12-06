@@ -23,7 +23,6 @@ interface RecordingDialogProp {
 }
 
 const RecordingDialog = (prop: RecordingDialogProp) => {
-  const { mediaStream, audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess } = useMediaAccess()
   const { onDialogClosed } = useAudioDialog()
   const { setAllMuted, filteredData, setFilteredData } = useAudioList()
   const { modal, setModalState } = useBoundStore()

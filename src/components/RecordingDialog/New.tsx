@@ -8,50 +8,10 @@ import { RecordingDialogState } from 'lib/RecordingDialogState'
 import CountdownTimer from './CountDownTimer'
 import PlayButton from './PlayButton'
 import AddToNftButton from './AddToNftButton'
+import d from './beats.json'
 
 const NewRecording = () => {
-  const [beats] = useState<Beat[]>([
-    {
-      quadrant: '1st',
-      name: 'intro',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%201.wav',
-    },
-    {
-      quadrant: '1st',
-      name: 'intro',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%202.wav',
-    },
-    {
-      quadrant: '2nd',
-      name: 'riff',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%201.wav',
-    },
-    {
-      quadrant: '2nd',
-      name: 'riff',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%202.wav',
-    },
-    {
-      quadrant: '1st',
-      name: 'intro',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%203.wav',
-    },
-    {
-      quadrant: '1st',
-      name: 'intro',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%204.wav',
-    },
-    {
-      quadrant: '2nd',
-      name: 'riff',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%203.wav',
-    },
-    {
-      quadrant: '2nd',
-      name: 'riff',
-      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%204.wav',
-    },
-  ])
+  const [beats] = useState<Beat[]>(d as Beat[])
 
   const { dialogState, onRecordingStart, onRecordingFinished } = useAudioDialog()
 
@@ -68,7 +28,7 @@ const NewRecording = () => {
             {(dialogState === RecordingDialogState.START || dialogState === RecordingDialogState.UPLOAD) && (
               <button
                 className="flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm"
-                onClick={onRecordingStart}
+                onClick={() => onRecordingStart(false)}
               >
                 <RecordIcon /> Record
               </button>
@@ -76,7 +36,7 @@ const NewRecording = () => {
             {(dialogState === RecordingDialogState.RECORD || dialogState === RecordingDialogState.COUNTDOWN) && (
               <button
                 className="flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm"
-                onClick={onRecordingStart}
+                onClick={() => onRecordingFinished()}
               >
                 <div className="h-5 w-5 rounded-full bg-red-400"></div>
                 <span className="text-red-400">Recording</span>

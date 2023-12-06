@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 const AddToNftButton = () => {
   const { dialogState, onDialogClosed } = useAudioDialog()
   const { modal, setModalState } = useBoundStore()
-
+  const { audioData } = useAudioDialog()
   const { publish, isLoading, isSuccess } = useCollab({
     tokenId: modal.audioRecording.tokenId,
     tokenAddress: modal.audioRecording.address,
@@ -32,7 +32,7 @@ const AddToNftButton = () => {
 
   return (
     <>
-      {dialogState === RecordingDialogState.UPLOAD && (
+      {dialogState === RecordingDialogState.UPLOAD && audioData.url && (
         <button
           className="bg-yellow-400 rounded-md text-black flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm"
           disabled={isLoading}
