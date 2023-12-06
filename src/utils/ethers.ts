@@ -96,8 +96,8 @@ export default class EthereumRpc {
       const signedMessage = await signer.signMessage(message)
 
       return signedMessage
-    } catch (error) {
-      return error as string
+    } catch (error: any) {
+      throw new Error(error.reason as string)
     }
   }
 

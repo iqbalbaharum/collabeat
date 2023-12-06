@@ -45,7 +45,7 @@
     "graphql": "^16.8.0",
     "ipfs-http-client": "^60.0.1",
     "near-api-js": "^2.1.4",
-    "nft.storage": "^7.1.0",
+    "nft.storage": "^7.1.1",
     "phantom-wagmi-connector": "^1.0.7",
     "react": "^18.2.0",
     "react-countdown-circle-timer": "^3.2.1",

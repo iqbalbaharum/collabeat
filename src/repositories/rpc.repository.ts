@@ -70,8 +70,8 @@ const usePublishTransaction = () => {
       let timeout: NodeJS.Timeout
       // eslint-disable-next-line prefer-const
       timeout = setTimeout(async () => {
-        await queryClient.invalidateQueries([RQ_KEY.GET_POSTS])
-        if (timeout) clearTimeout(timeout)
+        // await queryClient.invalidateQueries([RQ_KEY.GET_POSTS])
+        // if (timeout) clearTimeout(timeout)
       }, 5000)
     },
   })
@@ -89,36 +89,24 @@ const useStoreBlob = () => {
   })
 }
 
-const useGetPosts = (nft_key: string) => {
-  return useQuery({
-    queryKey: [RQ_KEY.GET_POSTS],
-    queryFn: async () => {
-      const result = await rpc.searchMetadatas(nft_key, `${import.meta.env.VITE_META_CONTRACT_ID}`)
-
-      const promises = result?.map(async (curr: any) => {
-        const res = await rpc.getContentFromIpfs(curr.cid as string)
-        const content = JSON.parse(res.data.result.content as string)
-        const data = content.content as { text: string; image: string }
-
-        return {
-          ...data,
-          public_key: curr.public_key,
-          timestamp: content.timestamp as number,
-        }
-      })
-
-      const results = await Promise.all(promises)
-
-      return results
-    },
-  })
-}
-
 const useGetMetadataBlock = (nftKey: string) => {
   return useQuery({
     queryKey: [RQ_KEY.GET_METADATA_BY_BLOCK, nftKey],
     queryFn: async () => {
-      const result = await rpc.searchMetadatas(nftKey, `${import.meta.env.VITE_META_CONTRACT_ID}`)
+      const result = await rpc.searchMetadatas({
+        query: [
+          {
+            column: 'data_key',
+            op: '=',
+            query: nftKey,
+          },
+          {
+            column: 'meta_contract_id',
+            op: '=',
+            query: import.meta.env.VITE_META_CONTRACT_ID as string,
+          },
+        ],
+      })
 
       const promises = result?.map(async (curr: any) => {
         const res = await rpc.getContentFromIpfs(curr.cid as string)
@@ -126,7 +114,8 @@ const useGetMetadataBlock = (nftKey: string) => {
         const data = content.content as { text: string; image: string }
 
         return {
-          ...data,
+          data,
+          version: curr.version,
           public_key: curr.public_key,
           timestamp: content.timestamp as number,
         }
@@ -136,14 +125,8 @@ const useGetMetadataBlock = (nftKey: string) => {
 
       return results
     },
+    enabled: nftKey.length > 0,
   })
 }
 
-export {
-  useGetCompleteTransactions,
-  useGetTransactions,
-  usePublishTransaction,
-  useStoreBlob,
-  useGetPosts,
-  useGetMetadataBlock,
-}
+export { useGetCompleteTransactions, useGetTransactions, usePublishTransaction, useStoreBlob, useGetMetadataBlock }

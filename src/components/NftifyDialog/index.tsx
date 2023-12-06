@@ -16,7 +16,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
   const [uploadedCid, setUplodedCid] = useState('')
   const { showSuccess } = useContext(AlertMessageContext)
   const { modal, setModalState } = useBoundStore()
-  const { ipfsFork } = useIpfs()
+  const { ipfs } = useIpfs()
 
   function handleSuccess() {
     showSuccess('Congrats on your first cool achievement')
@@ -30,7 +30,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
   useEffect(() => {
     const uploadToIpfs = async () => {
       try {
-        const cid = await ipfsFork.dag.put(modal.nftify.selections)
+        const cid = await ipfs.dag.put(modal.nftify.selections)
         setUplodedCid(cid.toString())
       } catch (e) {
         console.log(e)
@@ -38,9 +38,9 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
     }
 
     if (!uploadedCid) {
-      uploadToIpfs()
+      // uploadToIpfs()
     }
-  }, [uploadedCid, ipfsFork, prop])
+  }, [uploadedCid, ipfs, prop])
 
   return (
     <>

@@ -10,7 +10,7 @@ export type ModalState = {
 export type Modal = {
   signUpMain: ModalState
   signUpRainbow: ModalState
-  audioRecording: ModalState
+  audioRecording: ModalState & { chainId: string; address: string; tokenId: string; version: string }
   nftify: ModalState & { selections: SelectedAudio[] }
 }
 
@@ -24,7 +24,7 @@ const initialModal = {
   modal: {
     signUpMain: { isOpen: false },
     signUpRainbow: { isOpen: false },
-    audioRecording: { isOpen: false },
+    audioRecording: { isOpen: false, chainId: '', address: '', tokenId: '', version: '' },
     nftify: { isOpen: false, selections: [] },
   },
 }

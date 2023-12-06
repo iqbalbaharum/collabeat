@@ -143,9 +143,13 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
     }
 
     const rpc = new RPC(provider)
-    const signedMessage = await rpc.signMessage(message)
 
-    return { signature: signedMessage }
+    try {
+      const signedMessage = await rpc.signMessage(message)
+      return { signature: signedMessage }
+    } catch (e: any) {
+      throw new Error(e.toString())
+    }
   }
 
   function isConnected() {

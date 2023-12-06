@@ -6,9 +6,12 @@ import { PlayerState } from 'lib'
 
 interface AudioDialogContextProps {
   dialogState: RecordingDialogState
+  audioData: any
+  audioRef: any
   onRecordingStart?: () => void
   onRecordingFinished: () => void
   onCountdownFinished: () => void
+  onDialogClosed: () => void
 }
 
 interface AudioDialogProviderProps {
@@ -27,8 +30,7 @@ export const useAudioDialog = () => {
 
 export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
   const [dialogState, setDialogState] = useState<RecordingDialogState>(RecordingDialogState.START)
-
-  const { audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess } = useMediaAccess()
+  const { audioRef, audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess, clear } = useMediaAccess()
   const { setAllState } = useAudioList()
 
   const onRecordingStart = () => {
@@ -45,6 +47,10 @@ export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
 
   const onCountdownFinished = () => {
     setDialogState(RecordingDialogState.RECORD)
+  }
+
+  const onDialogClosed = () => {
+    clear()
   }
 
   useEffect(() => {
@@ -67,7 +73,17 @@ export const AudioDialogProvider = ({ children }: AudioDialogProviderProps) => {
   }, [dialogState, mediaRecorder])
 
   return (
-    <AudioDialogContext.Provider value={{ onCountdownFinished, dialogState, onRecordingStart, onRecordingFinished }}>
+    <AudioDialogContext.Provider
+      value={{
+        audioRef,
+        audioData,
+        onCountdownFinished,
+        dialogState,
+        onRecordingStart,
+        onRecordingFinished,
+        onDialogClosed,
+      }}
+    >
       {children}
     </AudioDialogContext.Provider>
   )

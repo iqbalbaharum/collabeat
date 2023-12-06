@@ -12,7 +12,6 @@ export enum RQ_KEY {
   GET_SHEETS = 'get_sheets',
   GET_BOOKMARKED_SHEETS = 'get_bookmarked_sheets',
   CHECK_BOOKMARKED_SHEETS = 'check_bookmarked_sheets',
-  GET_POSTS = 'get_posts',
   GET_NFTS = 'get_nfts',
   GET_METADATA_BY_BLOCK = 'get_metadata_by_block',
 }

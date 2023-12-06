@@ -9,6 +9,7 @@ import VersionModal from 'components/Modal/VersionModal'
 import { Metadata } from 'lib'
 import { useApi } from 'hooks/use-api'
 import VersionCard from 'components/VersionCard'
+import { useGetMetadataBlock } from 'repositories/rpc.repository'
 
 const PageNft = () => {
   const location = useLocation()
@@ -21,16 +22,28 @@ const PageNft = () => {
   const [data, setData] = useState<String[]>([])
   const [isDataLoaded, setIsDataLoaded] = useState(false)
 
+  const { data: metadata } = useGetMetadataBlock(nftKey)
   useEffect(() => {
-    const loadVersion = async () => {
-      const nftKey = formatDataKey(nft.chain_id as String, nft.token_address as String, nft.token_id as String)
+    // const loadVersion = async () => {
+    //   const nftKey = formatDataKey(nft.chain_id as String, nft.token_address as String, nft.token_id as String)
 
-      const response = await rpc.getMetadataUseKeyByBlock(nftKey, import.meta.env.VITE_META_CONTRACT_ID as String, '')
-      console.log(nftKey, import.meta.env.VITE_META_CONTRACT_ID as String, response.data)
-      const metadatas = response.data.result.metadatas as Metadata[]
+    //   const response = await rpc.getMetadataUseKeyByBlock()
+    //   const metadatas = response.data.result.metadatas as Metadata[]
 
+    //   const uniqueVersions: String[] = []
+    //   metadatas.map(item => {
+    //     if (!uniqueVersions.includes(item.version)) {
+    //       uniqueVersions.push(item.version)
+    //     }
+    //   })
+
+    //   setIsDataLoaded(true)
+    //   setData(uniqueVersions)
+    // }
+
+    if (metadata) {
       const uniqueVersions: String[] = []
-      metadatas.map(item => {
+      metadata.map(item => {
         if (!uniqueVersions.includes(item.version)) {
           uniqueVersions.push(item.version)
         }
@@ -45,7 +58,7 @@ const PageNft = () => {
     }
 
     if (nft && !isDataLoaded && !nftKey) {
-      loadVersion()
+      // loadVersion()
     }
   }, [nft, navigate, isDataLoaded, nftKey, rpc])
 

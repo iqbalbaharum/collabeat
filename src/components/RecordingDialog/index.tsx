@@ -24,7 +24,7 @@ interface RecordingDialogProp {
 
 const RecordingDialog = (prop: RecordingDialogProp) => {
   const { mediaStream, audioData, mediaRecorder, getMicrophoneAccess, removeMicrophoneAccess } = useMediaAccess()
-  const { onRecordingStart, onRecordingFinished } = useAudioDialog()
+  const { onDialogClosed } = useAudioDialog()
   const { setAllMuted, filteredData, setFilteredData } = useAudioList()
   const { modal, setModalState } = useBoundStore()
   const { dialogState } = useAudioDialog()
@@ -32,10 +32,17 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
 
   const [isAllBeatsMuted, setIsAllBeatsMuted] = useState(false)
 
-  const onHandleConfirmClicked = () => {}
-
   const onHandleDialogClosed = () => {
-    setModalState({ audioRecording: { isOpen: false } })
+    onDialogClosed()
+    setModalState({
+      audioRecording: {
+        isOpen: false,
+        chainId: '',
+        address: '',
+        tokenId: '',
+        version: '',
+      },
+    })
   }
 
   const onHandleMuteClicked = (muted: boolean) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const useMediaAccess = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>()
@@ -8,6 +8,7 @@ const useMediaAccess = () => {
     blob: null,
     url: '',
   })
+  const audioRef = useRef(new Audio())
 
   const getMicrophoneAccess = async () => {
     try {
@@ -39,6 +40,17 @@ const useMediaAccess = () => {
     }
   }
 
+  const clear = () => {
+    setAudioData({
+      blob: null,
+      url: '',
+    })
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0
+      audioRef.current.src = ''
+    }
+  }
+
   useEffect(() => {
     if (chunks.length > 0) {
       const blob = new Blob(chunks, { type: 'audio/mpeg' })
@@ -47,10 +59,12 @@ const useMediaAccess = () => {
         blob,
         url,
       })
+
+      audioRef.current.src = url
     }
   }, [chunks])
 
-  return { mediaStream, mediaRecorder, audioData, getMicrophoneAccess, removeMicrophoneAccess }
+  return { audioRef, mediaStream, mediaRecorder, audioData, getMicrophoneAccess, removeMicrophoneAccess, clear }
 }
 
 export default useMediaAccess

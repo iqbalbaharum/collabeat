@@ -2,12 +2,27 @@ import { useAudioList } from 'hooks/useAudioList'
 import { PlayerState } from 'lib'
 import { useBoundStore } from 'store'
 
-const PlaylistControlPanel = () => {
+interface Prop {
+  chainId: string
+  address: string
+  tokenId: string
+  version: string
+}
+
+const PlaylistControlPanel = (prop: Prop) => {
   const { finishedCounter, setAllState, canRecord } = useAudioList()
   const { setModalState } = useBoundStore()
 
   const onHandleRecordClicked = () => {
-    setModalState({ audioRecording: { isOpen: true } })
+    setModalState({
+      audioRecording: {
+        isOpen: true,
+        chainId: prop.chainId,
+        address: prop.address,
+        tokenId: prop.tokenId,
+        version: prop.version,
+      },
+    })
   }
 
   return (

@@ -100,39 +100,23 @@ const getMetadata = async (
   return response.data?.result?.metadata as Metadata
 }
 
-const searchMetadatas = async (nftKey: String, meta_contract_id: String) => {
+const searchMetadatas = async ({ query = [], ordering = [], from = 0, to = 0 }: Partial<JSONRPCFilter<Metadata>>) => {
   const response = await rpc({
     method: 'POST',
     data: JSON.stringify({
       jsonrpc: '2.0',
       method: 'search_metadatas',
       params: {
-        query: [
-          {
-            column: 'data_key',
-            op: '=',
-            query: nftKey,
-          },
-          {
-            column: 'meta_contract_id',
-            op: '=',
-            query: meta_contract_id,
-          },
-          {
-            column: 'loose',
-            op: '=',
-            query: '0',
-          },
-        ],
-        ordering: [],
-        from: 0,
-        to: 0,
+        query: [...query],
+        ordering,
+        from,
+        to,
       },
       id: '1',
     }),
   })
 
-  return response.data?.result?.metadatas
+  return response.data?.result?.metadatas ?? []
 }
 
 const getContentFromIpfs = (cid: String) => {

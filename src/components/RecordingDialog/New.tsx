@@ -1,53 +1,57 @@
 import { useState } from 'react'
 import BeatButton from './BeatButton'
 import { Beat } from 'lib/Beat'
-import { LoadingSpinner, PlayIcon, RecordIcon, StopIcon, SubmitIcon } from 'components/Icons/icons'
+import { RecordIcon } from 'components/Icons/icons'
 import { defineBeatColorByQuadrant, defineTextColorByQuadrant } from 'utils/beat'
 import { useAudioDialog } from './hooks/useAudioDialog'
 import { RecordingDialogState } from 'lib/RecordingDialogState'
 import CountdownTimer from './CountDownTimer'
+import PlayButton from './PlayButton'
+import AddToNftButton from './AddToNftButton'
 
 const NewRecording = () => {
   const [beats] = useState<Beat[]>([
     {
       quadrant: '1st',
-      name: 'beat',
-      url: 'https://tonejs.github.io/audio/berklee/gong_1.mp3',
+      name: 'intro',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%201.wav',
     },
     {
       quadrant: '1st',
-      name: 'beat',
-      url: 'https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3',
+      name: 'intro',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%202.wav',
     },
     {
       quadrant: '2nd',
-      name: 'synth',
-      url: 'https://tonejs.github.io/audio/drum-samples/loops/ominous.mp3',
+      name: 'riff',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%201.wav',
     },
     {
       quadrant: '2nd',
-      name: 'whistle',
-      url: 'https://tonejs.github.io/audio/berklee/gong_1.mp3',
+      name: 'riff',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%202.wav',
     },
     {
       quadrant: '1st',
-      name: 'beat',
-      url: 'https://tonejs.github.io/audio/berklee/gong_1.mp3',
+      name: 'intro',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%203.wav',
     },
     {
       quadrant: '1st',
-      name: 'beat',
-      url: 'https://tonejs.github.io/audio/berklee/gong_1.mp3',
+      name: 'intro',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Intro/Intro%204.wav',
     },
     {
       quadrant: '2nd',
-      name: 'choir',
-      url: 'https://tonejs.github.io/audio/berklee/gong_1.mp3',
+      name: 'riff',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%203.wav',
+    },
+    {
+      quadrant: '2nd',
+      name: 'riff',
+      url: 'https://bafybeiawdd4nvto73eqajq34qmyy363efg4eogwsamnya6ivkxu4ifhfvi.ipfs.nftstorage.link/Riff/Riff%204.wav',
     },
   ])
-
-  const [isRecordedPlaying, setIsRecordedPlaying] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const { dialogState, onRecordingStart, onRecordingFinished } = useAudioDialog()
 
@@ -59,17 +63,7 @@ const NewRecording = () => {
     <>
       <div className="w-full text-center">
         <div className="py-2 grid grid-cols-4">
-          {isRecordedPlaying ? (
-            <button className="rounded-md capitalize py-2.5 px-2 flex flex-col items-center justify-center md:px-5 md:hover:scale-105">
-              <StopIcon />
-              Stop
-            </button>
-          ) : (
-            <button className="capitalize py-2.5 px-2 flex flex-col items-center gap-2 justify-center md:px-5 md:hover:scale-105">
-              <PlayIcon />
-              Play
-            </button>
-          )}
+          <PlayButton />
           <div className="flex items-center justify-center">
             {(dialogState === RecordingDialogState.START || dialogState === RecordingDialogState.UPLOAD) && (
               <button
@@ -90,16 +84,7 @@ const NewRecording = () => {
             )}
           </div>
           &nbsp;
-          {dialogState === RecordingDialogState.UPLOAD && (
-            <button
-              className="bg-yellow-400 rounded-md text-black flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm"
-              disabled={isLoading}
-              // onClick={() => add_to_nft()}
-            >
-              {isLoading ? <LoadingSpinner /> : <SubmitIcon />}
-              Collab
-            </button>
-          )}
+          <AddToNftButton />
         </div>
         <div className="mt-2 grid grid-cols-4 gap-2 w-full">
           {beats.map((beat, index) => (
