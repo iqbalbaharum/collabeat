@@ -1,3 +1,4 @@
+import GenericButton from 'components/Button/GenericButton'
 import { useAudioList } from 'hooks/useAudioList'
 import { PlayerState } from 'lib'
 import { useBoundStore } from 'store'
@@ -56,14 +57,7 @@ const PlaylistControlPanel = (prop: Prop) => {
           </button>
         )}
 
-        {true && (
-          <button
-            className="from-20% mr-2 inline-block min-w-[8rem] rounded-xl bg-gradient-to-t from-[#7224A7] to-[#FF3065] px-8 py-3  font-bold text-white md:hover:scale-105"
-            onClick={onHandleRecordClicked}
-          >
-            Record
-          </button>
-        )}
+        {true && <GenericButton name="Record" onClick={onHandleRecordClicked} className="rounded-xl px-8 py-3" />}
       </div>
     </div>
   )

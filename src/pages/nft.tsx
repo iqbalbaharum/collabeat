@@ -6,7 +6,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { createMixedAudio, formatDataKey } from 'utils'
 import AddMusicIcon from 'assets/icons/addmusic.svg'
 import VersionModal from 'components/Modal/VersionModal'
-import { Metadata } from 'lib'
 import { useApi } from 'hooks/use-api'
 import VersionCard from 'components/VersionCard'
 import { useGetMetadataBlock } from 'repositories/rpc.repository'
@@ -23,25 +22,9 @@ const PageNft = () => {
   const [isDataLoaded, setIsDataLoaded] = useState(false)
 
   const { data: metadata } = useGetMetadataBlock(nftKey)
+
   useEffect(() => {
-    // const loadVersion = async () => {
-    //   const nftKey = formatDataKey(nft.chain_id as String, nft.token_address as String, nft.token_id as String)
-
-    //   const response = await rpc.getMetadataUseKeyByBlock()
-    //   const metadatas = response.data.result.metadatas as Metadata[]
-
-    //   const uniqueVersions: String[] = []
-    //   metadatas.map(item => {
-    //     if (!uniqueVersions.includes(item.version)) {
-    //       uniqueVersions.push(item.version)
-    //     }
-    //   })
-
-    //   setIsDataLoaded(true)
-    //   setData(uniqueVersions)
-    // }
-
-    if (metadata) {
+    if (metadata && metadata.length > 0) {
       const uniqueVersions: String[] = []
       metadata.map(item => {
         if (!uniqueVersions.includes(item.version)) {
@@ -54,13 +37,13 @@ const PageNft = () => {
     }
 
     if (!nft) {
-      navigate('/inventory')
+      navigate('/create-beat')
     }
 
     if (nft && !isDataLoaded && !nftKey) {
       // loadVersion()
     }
-  }, [nft, navigate, isDataLoaded, nftKey, rpc])
+  }, [metadata, nft, navigate, isDataLoaded, nftKey, rpc])
 
   const [shareDialogState, setShareDialogState] = useState({
     chainId: '',

@@ -14,4 +14,6 @@ export enum RQ_KEY {
   CHECK_BOOKMARKED_SHEETS = 'check_bookmarked_sheets',
   GET_NFTS = 'get_nfts',
   GET_METADATA_BY_BLOCK = 'get_metadata_by_block',
+  GET_BEATS_BY_VERSION = 'get_beats_by_version',
+  GET_NFT_METADATA = 'get_nft_metadata',
 }

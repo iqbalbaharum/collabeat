@@ -1,4 +1,6 @@
-import { CubeTransparentIcon } from '@heroicons/react/24/solid'
+import { CubeTransparentIcon } from '@heroicons/react/20/solid'
+import GenericButton from 'components/Button/GenericButton'
+import { NftifyIcon } from 'components/Icons/icons'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { useConnectedWallet } from 'hooks/use-connected-wallet'
 import { useAudioList } from 'hooks/useAudioList'
@@ -35,19 +37,7 @@ const NFTifyButton = (prop: Prop) => {
     setModalState({ nftify: { isOpen: true, selections } })
   }
 
-  return (
-    <>
-      <>
-        <button
-          className={`from-20% flex h-20 w-20 flex-col items-center justify-center rounded-sm bg-gradient-to-t from-[#F5517B] to-[#FEDC00] p-2 text-xs font-bold text-white md:hover:scale-105`}
-          onClick={() => toggleNftifyMode()}
-        >
-          <CubeTransparentIcon />
-          <span>NFTify</span>
-        </button>
-      </>
-    </>
-  )
+  return <GenericButton name="NFTify" icon={<NftifyIcon />} onClick={toggleNftifyMode} />
 }
 
 export default NFTifyButton

@@ -2,15 +2,17 @@ import LoadingIndicator from 'components/LoadingIndicator'
 import { useAudioList } from 'hooks/useAudioList'
 import { AudioState, PlayerState } from 'lib'
 import { useEffect, useState } from 'react'
-import { useGetMetadataBlock } from 'repositories/rpc.repository'
+import { useGetBeatsByVersion } from 'repositories/rpc.repository'
 
 interface Prop {
   nftKey: string
+  version: string
 }
 const PlaylistList = (prop: Prop) => {
   const [isLoad, setIsLoad] = useState(false)
 
-  const { data: audios } = useGetMetadataBlock(prop.nftKey)
+  const { data: audios } = useGetBeatsByVersion(prop.nftKey, prop.version)
+  console.log(audios)
   const { filteredData, loadAudios } = useAudioList()
 
   useEffect(() => {

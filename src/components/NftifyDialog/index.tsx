@@ -9,7 +9,6 @@ import { useBoundStore } from 'store'
 
 interface NftifyDialogProp {
   tokenId: String
-  dataKey: String
 }
 
 const NftifyDialog = (prop: NftifyDialogProp) => {

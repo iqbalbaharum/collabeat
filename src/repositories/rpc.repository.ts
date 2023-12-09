@@ -3,6 +3,7 @@ import rpc, { JSONRPCFilter, NftMetadata, Transaction } from '../services/rpc'
 import { useIpfs } from 'hooks/use-ipfs'
 import { RQ_KEY } from 'repositories'
 import { formatDataKey } from 'utils'
+import { LineageTokenMetadata } from 'lib/TokenMetadata'
 
 const useGetCompleteTransactions = () => {
   return useQuery({
@@ -129,4 +130,76 @@ const useGetMetadataBlock = (nftKey: string) => {
   })
 }
 
-export { useGetCompleteTransactions, useGetTransactions, usePublishTransaction, useStoreBlob, useGetMetadataBlock }
+const useGetBeatsByVersion = (nftKey: string, version: string) => {
+  return useQuery({
+    queryKey: [RQ_KEY.GET_BEATS_BY_VERSION, nftKey, version],
+    queryFn: async () => {
+      const result = await rpc.searchMetadatas({
+        query: [
+          {
+            column: 'data_key',
+            op: '=',
+            query: nftKey,
+          },
+          {
+            column: 'meta_contract_id',
+            op: '=',
+            query: import.meta.env.VITE_META_CONTRACT_ID as string,
+          },
+          {
+            column: 'version',
+            op: '=',
+            query: version,
+          },
+        ],
+      })
+
+      const promises = result?.map(async (curr: any) => {
+        const res = await rpc.getContentFromIpfs(curr.cid as string)
+        const content = JSON.parse(res.data.result.content as string)
+        const data = content.content as { text: string; image: string }
+
+        return {
+          data,
+          version: curr.version,
+          public_key: curr.public_key,
+          timestamp: content.timestamp as number,
+        }
+      })
+
+      const results = await Promise.all(promises)
+
+      return results
+    },
+    enabled: nftKey.length > 0,
+  })
+}
+
+const useGetNftMetadata = (data_key: string) => {
+  return useQuery<LineageTokenMetadata>({
+    queryKey: [RQ_KEY.GET_NFT_METADATA, data_key],
+    queryFn: async () => {
+      const nft_metadata = await rpc.getMetadata(
+        data_key,
+        '0x01',
+        import.meta.env.VITE_CB_METADATA_PK.toLowerCase() as String,
+        '',
+        ''
+      )
+
+      const content = await rpc.getContentFromIpfs(nft_metadata.cid)
+      return JSON.parse(content.data.result.content as string) as LineageTokenMetadata
+    },
+    enabled: Boolean(data_key),
+  })
+}
+
+export {
+  useGetCompleteTransactions,
+  useGetTransactions,
+  usePublishTransaction,
+  useStoreBlob,
+  useGetMetadataBlock,
+  useGetBeatsByVersion,
+  useGetNftMetadata,
+}

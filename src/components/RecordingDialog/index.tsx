@@ -2,31 +2,17 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import Waveform from 'components/Waveform'
 import { useEffect } from 'react'
-import Recording from './Recording'
-import CountdownTimer from './CountDownTimer'
-import StartRecording from './StartRecording'
-import Upload from './Upload'
 import { AudioState, PlayerState } from 'lib'
 import { useWeb3Auth } from 'hooks/use-web3auth'
 import NewRecording from './New'
-import useMediaAccess from './hooks/useMediaAccess'
 import { useAudioDialog } from './hooks/useAudioDialog'
-import { RecordingDialogState } from 'lib/RecordingDialogState'
 import { useAudioList } from 'hooks/useAudioList'
 import { useBoundStore } from 'store'
-interface RecordingDialogProp {
-  dataKey: String
-  chainId: String
-  address: String
-  tokenId: String
-  version: String
-}
 
-const RecordingDialog = (prop: RecordingDialogProp) => {
+const RecordingDialog = () => {
   const { onDialogClosed } = useAudioDialog()
   const { setAllMuted, filteredData, setFilteredData } = useAudioList()
   const { modal, setModalState } = useBoundStore()
-  const { dialogState } = useAudioDialog()
   const { address } = useWeb3Auth()
 
   const [isAllBeatsMuted, setIsAllBeatsMuted] = useState(false)
@@ -78,12 +64,12 @@ const RecordingDialog = (prop: RecordingDialogProp) => {
   return (
     <>
       <div
-        className={classNames('fixed inset-0 z-10 overflow-y-auto', {
+        className={classNames('fixed inset-0 z-10 overflow-y-auto sm:w-full lg:w-1/2 mx-auto', {
           hidden: !modal.audioRecording.isOpen,
         })}
       >
         <div className="flex min-h-screen items-center justify-center text-center text-sm text-white md:text-lg bg-black/80">
-          <div className="w-full h-screen bg-gray-900 px-2 py-4 md:px-4">
+          <div className="w-full h-screen bg-gray-900/50 backdrop-blur px-2 py-4 md:px-4">
             <div className="flex justify-end pr-2 md:pr-0">
               <button
                 className="rounded-md bg-red-600 text-sm py-2 px-2 md:px-5 md:hover:scale-105"

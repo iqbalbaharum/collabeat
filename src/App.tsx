@@ -36,8 +36,8 @@ const App = () => {
             <Route element={<MainLayout children={undefined} />}>
               <Route path="/" element={<PageIndex />} />
               <Route path="/nft" element={<PageNft />} />
-              <Route path="/editor/:chainId/:tokenAddress/:tokenId/:version" element={<PageEditor />} />
-              <Route path="/inventory" element={<PageInventory />} />
+              <Route path="/editor/:nftKey" element={<PageEditor />} />
+              <Route path="/create-beat" element={<PageInventory />} />
             </Route>
             <Route element={<PublicLayout children={undefined} />}>
               <Route path="/shared/:chainId/:tokenAddress/:tokenId/:version" element={<PageShareEditor />} />
