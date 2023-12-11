@@ -67,7 +67,7 @@ const MusicItemSellDialog = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-full"
             >
-              <Dialog.Panel className="w-full h-1/3 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full h-2/5 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
                 <div className="flex flex-col p-4 text-white h-full">
                   <h3 className="text-lg font-bold">Unstake to unpromote this beat</h3>
                   <h5 className="text-md">By unstake this beat, it would possibly drop rank</h5>

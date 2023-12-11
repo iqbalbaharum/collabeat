@@ -27,15 +27,15 @@ const MarketplaceMore = () => {
               leaveTo="opacity-0 translate-y-full"
             >
               <Dialog.Panel className="w-full h-screen fixed max-w-md bottom-0 text-center transform overflow-hidden bg-black/80 backdrop-blur align-middle shadow-xl transition-all">
-                <div className="flex flex-col justify-between items-stretch w-full mt-20">
+                <div className="flex h-screen flex-col justify-between items-stretch w-full pt-16 pb-40">
                   <div className="flex-1">
                     <div className="flex flex-col gap-4 justify-start items-start text-gray-200 p-3">
                       <div className="flex gap-4">
                         <img src={modal.moreInfo.metadata?.image} className="h-16 w-16 rounded-md" />
                         <div className="text-left">
                           <div className="text-white text-sm">{modal.moreInfo.metadata?.name}</div>
-                          <div className="text-xs uppercase text-gray-500">2 Collaborators</div>
-                          <div className="text-xs uppercase text-gray-500">8 VOTES</div>
+                          <div className="text-xs uppercase text-gray-200">2 Collaborators</div>
+                          <div className="text-xs uppercase text-gray-200">8 VOTES</div>
                         </div>
                       </div>
                       <div>

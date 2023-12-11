@@ -28,41 +28,41 @@ const UserModal = () => {
           <div className={`fixed inset-0 bg-blue-800/40 backdrop-blur`} aria-hidden="true" />
         </Transition.Child>
 
-        <Transition.Child
-          as={Fragment}
-          enter="transition ease-out duration-300 transform"
-          enterFrom="opacity-0 translate-y-full"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-200 transform"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-full"
-        >
-          <div className="fixed w-full sm:bottom-0 lg:w-2/4 lg:-translate-x-1/2 lg:left-1/2 lg:top-1/2 -translate-y-1/2 transform rounded-lg bg-slate-900 text-white lg:h-2/5 sm:h-1/2 sm:max-w-md">
-            <Dialog.Panel className="h-full text-center">
-              <div
-                className={`flex flex-col p-4 ring-1 ring-white backdrop-blur border shadow-2xl h-full border-slate-600`}
-              >
-                <h3 className="flex-1 flex flex-col items-center justify-center font-bold text-lg">
-                  {shortenAddress(address)}
-                </h3>
-                <div className="h-1/3 flex justify-center items-center gap-2 w-full">
-                  <button
-                    className="w-1/2 font-semibold bg-white px-2 rounded-lg py-4 border-1 border-slate-600 flex gap-2 items-center justify-center text-slate-600 text-sm cursor-pointer"
-                    onClick={() => onClickDisconnect()}
-                  >
-                    <DisconnectIcon /> Copy Address
-                  </button>
-                  <button
-                    className="w-1/2 font-semibold bg-white px-2 rounded-lg py-4 border-1 border-slate-600 flex gap-2 items-center justify-center text-slate-600 text-sm cursor-pointer"
-                    onClick={() => onClickDisconnect()}
-                  >
-                    <DisconnectIcon /> Disconnect
-                  </button>
+        <div className="max-w-md mx-auto fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="transition ease-out duration-300 transform"
+              enterFrom="opacity-0 translate-y-full"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-200 transform"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-full"
+            >
+              <Dialog.Panel className="w-full h-1/3 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
+                <div className={`flex flex-col p-4 backdrop-blur shadow-2xl h-full `}>
+                  <h3 className="flex-1 flex flex-col items-center justify-center font-bold text-lg text-white">
+                    {shortenAddress(address)}
+                  </h3>
+                  <div className="h-1/3 flex justify-center items-center gap-2 w-full">
+                    <button
+                      className="w-1/2 font-semibold bg-white px-2 rounded-lg py-4 border-1 border-slate-600 flex gap-2 items-center justify-center text-slate-600 text-sm cursor-pointer"
+                      onClick={() => {}}
+                    >
+                      <DisconnectIcon /> Copy Address
+                    </button>
+                    <button
+                      className="w-1/2 font-semibold bg-white px-2 rounded-lg py-4 border-1 border-slate-600 flex gap-2 items-center justify-center text-slate-600 text-sm cursor-pointer"
+                      onClick={() => onClickDisconnect()}
+                    >
+                      <DisconnectIcon /> Disconnect
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Dialog.Panel>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
-        </Transition.Child>
+        </div>
       </Dialog>
     </Transition>
   )

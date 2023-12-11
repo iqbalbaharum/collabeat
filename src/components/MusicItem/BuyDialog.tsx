@@ -67,10 +67,10 @@ const MusicItemBuyDialog = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-full"
             >
-              <Dialog.Panel className="w-full h-1/3 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full h-2/5 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
                 <div className="flex flex-col p-4 text-white h-full">
                   <h3 className="text-lg font-bold">Stake to promote this beat</h3>
-                  <h5 className="text-md">The more you promote, this beat the higher the ranks</h5>
+                  <h5 className="text-md">The more you promote, the higher the ranks</h5>
                   <div className="flex-1 flex items-center justify-center">
                     <div className="text-center flex flex-col gap-1">
                       <QuantityInput input={amount} setInput={setAmount} />
