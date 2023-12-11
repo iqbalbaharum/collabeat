@@ -79,7 +79,7 @@ export function shortenAddress(address: string, n = 4) {
     return address
   }
 
-  const firstNChars = address.slice(0, n)
+  const firstNChars = address.slice(0, n + 2)
   const lastNChars = address.slice(-n)
 
   return `${firstNChars}...${lastNChars}`

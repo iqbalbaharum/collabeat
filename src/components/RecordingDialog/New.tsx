@@ -8,12 +8,10 @@ import { RecordingDialogState } from 'lib/RecordingDialogState'
 import CountdownTimer from './CountDownTimer'
 import PlayButton from './PlayButton'
 import AddToNftButton from './AddToNftButton'
-import d from './beats.json'
 
 const NewRecording = () => {
-  const [beats] = useState<Beat[]>(d as Beat[])
-
-  const { dialogState, onRecordingStart, onRecordingFinished } = useAudioDialog()
+  const { dialogState, onRecordingStart, onRecordingFinished, beats, activeBeats, onHandleBeatClicked } =
+    useAudioDialog()
 
   const onHandleStop = () => {
     onRecordingFinished()
@@ -23,7 +21,6 @@ const NewRecording = () => {
     <>
       <div className="w-full text-center">
         <div className="py-2 grid grid-cols-4">
-          <PlayButton />
           <div className="flex items-center justify-center">
             {(dialogState === RecordingDialogState.START || dialogState === RecordingDialogState.UPLOAD) && (
               <button
@@ -43,6 +40,7 @@ const NewRecording = () => {
               </button>
             )}
           </div>
+          <PlayButton />
           &nbsp;
           <AddToNftButton />
         </div>
@@ -53,6 +51,8 @@ const NewRecording = () => {
               color={defineBeatColorByQuadrant(beat.quadrant)}
               textColor={defineTextColorByQuadrant(beat.quadrant)}
               beat={beat}
+              isActive={activeBeats.some(activeBeat => activeBeat.id === beat.id)}
+              onHandleBeatClicked={onHandleBeatClicked}
             />
           ))}
         </div>

@@ -6,7 +6,7 @@ import { CURRENT_CHAIN } from 'store/slices/wallet.slice'
 import { abbreviateETHBalance, shortenAddress } from 'utils'
 
 export function ConnectedWalletInfo() {
-  const { current } = useBoundStore()
+  const { current, setModalState } = useBoundStore()
   const { disconnect, getUserBalance, isConnected, address } = useWeb3Auth()
 
   const [balance, setBalance] = useState('')
@@ -53,11 +53,10 @@ export function ConnectedWalletInfo() {
       <PhantomIcon />
       <SolanaIcon /> */}
 
-      <div className="flex rounded-lg bg-[#1A1B1F]">
-        <p className="px-4 py-2">{`${balance ?? '0'} ${'MATIC'}`}</p>
+      <button className="flex rounded-lg bg-[#1A1B1F]" onClick={() => setModalState({ user: { isOpen: true } })}>
         <p className="rounded-lg bg-[#38393C] px-4 py-2 font-bold"> {`${shortenAddress(address) ?? '-'}`}</p>
-      </div>
-      <button
+      </button>
+      {/* <button
         style={{
           fontSize: '16px',
           padding: '15px',
@@ -68,7 +67,7 @@ export function ConnectedWalletInfo() {
         onClick={() => disconnect()}
       >
         Disconnect
-      </button>
+      </button> */}
     </>
   )
 }

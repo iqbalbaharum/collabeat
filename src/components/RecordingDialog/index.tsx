@@ -64,7 +64,7 @@ const RecordingDialog = () => {
   return (
     <>
       <div
-        className={classNames('fixed inset-0 z-10 overflow-y-auto sm:w-full lg:w-1/2 mx-auto', {
+        className={classNames('md:max-w-md fixed inset-0 z-10 overflow-y-auto sm:w-full lg:w-1/2 mx-auto', {
           hidden: !modal.audioRecording.isOpen,
         })}
       >

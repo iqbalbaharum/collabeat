@@ -13,6 +13,7 @@ export type Modal = {
   signUpRainbow: ModalState
   audioRecording: ModalState & { chainId: string; address: string; tokenId: string; version: string }
   nftify: ModalState & { selections: SelectedAudio[]; dataKey: string; nft: LineageTokenMetadata | undefined }
+  user: ModalState
   buyVote: ModalState & { tokenId: string }
   sellVote: ModalState & { tokenId: string }
 }
@@ -29,6 +30,7 @@ const initialModal = {
     signUpRainbow: { isOpen: false },
     audioRecording: { isOpen: false, chainId: '', address: '', tokenId: '', version: '' },
     nftify: { isOpen: false, selections: [], dataKey: '', nft: undefined },
+    user: { isOpen: false },
     buyVote: { isOpen: false, tokenId: '' },
     sellVote: { isOpen: false, tokenId: '' },
   },
