@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand'
 import { resetters } from '..'
-import { Nft, SelectedAudio } from 'lib'
+import { SelectedAudio } from 'lib'
 import { LineageTokenMetadata } from 'lib/TokenMetadata'
 
 export type ModalState = {
@@ -13,6 +13,8 @@ export type Modal = {
   signUpRainbow: ModalState
   audioRecording: ModalState & { chainId: string; address: string; tokenId: string; version: string }
   nftify: ModalState & { selections: SelectedAudio[]; dataKey: string; nft: LineageTokenMetadata | undefined }
+  buyVote: ModalState & { tokenId: string }
+  sellVote: ModalState & { tokenId: string }
 }
 
 export interface ModalSlice {
@@ -27,6 +29,8 @@ const initialModal = {
     signUpRainbow: { isOpen: false },
     audioRecording: { isOpen: false, chainId: '', address: '', tokenId: '', version: '' },
     nftify: { isOpen: false, selections: [], dataKey: '', nft: undefined },
+    buyVote: { isOpen: false, tokenId: '' },
+    sellVote: { isOpen: false, tokenId: '' },
   },
 }
 

@@ -1,4 +1,5 @@
 import { CubeTransparentIcon } from '@heroicons/react/20/solid'
+import AccentButton from 'components/Button/AccentButton'
 import GenericButton from 'components/Button/GenericButton'
 import { NftifyIcon } from 'components/Icons/icons'
 import { AlertMessageContext } from 'hooks/use-alert-message'
@@ -39,7 +40,7 @@ const NFTifyButton = (prop: Prop) => {
     setModalState({ nftify: { isOpen: true, selections, dataKey: prop.nftKey, nft: prop.nft } })
   }
 
-  return <GenericButton name="NFTify" icon={<NftifyIcon />} onClick={toggleNftifyMode} />
+  return <AccentButton name="NFTify" icon={<NftifyIcon />} onClick={toggleNftifyMode} />
 }
 
 export default NFTifyButton

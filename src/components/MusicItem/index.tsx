@@ -2,12 +2,16 @@ import GenericButton from 'components/Button/GenericButton'
 import { PlayIcon } from 'components/Icons/icons'
 import { Nft } from 'lib'
 import { Beat } from 'lib/Beat'
+import { useBoundStore } from 'store'
 
 interface Prop {
+  tokenId: string
   beat: { name: string; owner: string }
 }
 
 const MusicItem = (prop: Prop) => {
+  const { setModalState } = useBoundStore()
+
   return (
     <>
       <div className="group/item flex justify-between px-4 py-2.5 bg-white/10 hover:bg-slate-300/10 cursor-pointer backdrop-blur rounded-md">
@@ -24,8 +28,14 @@ const MusicItem = (prop: Prop) => {
         <div className="flex gap-4 items-center">
           <div className="flex items-center">0.022 ETH</div>
           <div className="flex gap-2">
-            <GenericButton name="Buy" onClick={() => {}} />
-            <GenericButton name="Sell" onClick={() => {}} />
+            <GenericButton
+              name="Buy"
+              onClick={() => setModalState({ buyVote: { isOpen: true, tokenId: prop.tokenId } })}
+            />
+            <GenericButton
+              name="Sell"
+              onClick={() => setModalState({ sellVote: { isOpen: true, tokenId: prop.tokenId } })}
+            />
           </div>
         </div>
       </div>
