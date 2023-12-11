@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import ConfirmButton from './ConfirmButton'
 import { useBoundStore } from 'store'
+import useMint from './hooks/useMint'
 
 interface NftifyDialogProp {
   tokenId: String
@@ -15,21 +16,17 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
   const [uploadedCid, setUplodedCid] = useState('')
   const { showSuccess } = useContext(AlertMessageContext)
   const { modal, setModalState } = useBoundStore()
-  const { ipfs } = useIpfs()
-
-  function handleSuccess() {
-    showSuccess('Congrats on your first cool achievement')
-    onDialogClosed()
-  }
+  const { ipfsFork } = useIpfs()
+  const { mintPrice } = useMint()
 
   const onDialogClosed = () => {
-    setModalState({ nftify: { isOpen: false, selections: [] } })
+    setModalState({ nftify: { isOpen: false, selections: [], dataKey: '', nft: undefined } })
   }
 
   useEffect(() => {
     const uploadToIpfs = async () => {
       try {
-        const cid = await ipfs.dag.put(modal.nftify.selections)
+        const cid = await ipfsFork.dag.put(modal.nftify.selections)
         setUplodedCid(cid.toString())
       } catch (e) {
         console.log(e)
@@ -37,9 +34,9 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
     }
 
     if (!uploadedCid) {
-      // uploadToIpfs()
+      uploadToIpfs().catch(console.log)
     }
-  }, [uploadedCid, ipfs, prop])
+  }, [uploadedCid, ipfsFork, prop, modal.nftify.selections])
 
   return (
     <>
@@ -65,7 +62,13 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
                 </p>
               </div>
               <div className="mt-6 flex justify-center">
-                {/* {uploadedCid && <ConfirmButton cid={uploadedCid} onForkSuccess={() => handleSuccess()} />} */}
+                {uploadedCid && mintPrice && (
+                  <ConfirmButton
+                    cid={uploadedCid}
+                    dataKey={modal.nftify.dataKey}
+                    name={modal.nftify.nft?.name as string}
+                  />
+                )}
                 <button className="bg-red-600 px-5 py-3 text-white" onClick={onDialogClosed}>
                   Cancel
                 </button>

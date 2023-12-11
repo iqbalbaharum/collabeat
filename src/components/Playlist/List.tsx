@@ -1,4 +1,5 @@
 import LoadingIndicator from 'components/LoadingIndicator'
+import Waveform from 'components/Waveform'
 import { useAudioList } from 'hooks/useAudioList'
 import { AudioState, PlayerState } from 'lib'
 import { useEffect, useState } from 'react'
@@ -12,8 +13,7 @@ const PlaylistList = (prop: Prop) => {
   const [isLoad, setIsLoad] = useState(false)
 
   const { data: audios } = useGetBeatsByVersion(prop.nftKey, prop.version)
-  console.log(audios)
-  const { filteredData, loadAudios } = useAudioList()
+  const { filteredData, loadAudios, onToggleSound } = useAudioList()
 
   useEffect(() => {
     if (audios && !isLoad) {
@@ -39,20 +39,17 @@ const PlaylistList = (prop: Prop) => {
             if (audioState.data) {
               return (
                 <div key={key} className="border-1 m-1 h-[90px] rounded-lg bg-[#181818] px-8 py-2 text-left">
-                  <div className="mb-2 whitespace-nowrap text-gray-400 text-sm text-black">
-                    {audioState.key.toString()}
-                  </div>
+                  <div className="mb-2 whitespace-nowrap text-gray-400 text-sm">{audioState.key.toString()}</div>
                   <div className="h-1/2 w-full">
-                    {/* <Waveform
-                        url={audioState.data as string}
-                        playerState={audioState.playerState}
-                        isMuted={audioState.isMuted}
-                        onToggleSound={() => onToggleSound(audioState)}
-                        isSelecting={false}
-                        isSelected={audioState.selected}
-                        onSelectButtonClicked={() => onToggleSelection(audioState)}
-                        onFinish={() => setFinishedCounter(prev => prev - 1)}
-                      /> */}
+                    <Waveform
+                      url={audioState.data as string}
+                      playerState={audioState.playerState}
+                      isMuted={audioState.isMuted}
+                      onToggleSound={() => onToggleSound(audioState)}
+                      isSelecting={false}
+                      isSelected={audioState.selected}
+                      // onFinish={() => setFinishedCounter(prev => prev - 1)}
+                    />
                   </div>
                 </div>
               )

@@ -4,66 +4,54 @@ import { useWeb3Auth } from 'hooks/use-web3auth'
 import { useContext, useState } from 'react'
 import { useBoundStore } from 'store'
 import { parseEther } from 'viem'
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import useMintRequest from './hooks/useMintRequest'
 
-interface Props {
-  cid: string
-  onForkSuccess: () => void
-}
-
-const ConfirmButton = ({ cid, onForkSuccess }: Props) => {
-  const { showError } = useContext(AlertMessageContext)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const { nft } = useBoundStore()
-  const { data_key, metadata, version } = nft
-  const { address } = useWeb3Auth()
-
-  const { config } = usePrepareContractWrite({
-    address: String(import.meta.env.VITE_COLLABEAT) as `0x${string}`,
-    abi: [
+const abis = [
+  {
+    inputs: [
+      { internalType: 'string', name: 'data_key', type: 'string' },
+      { internalType: 'string', name: 'version', type: 'string' },
+      { internalType: 'string', name: 'nft_name', type: 'string' },
+      { internalType: 'string', name: 'ipfs_address', type: 'string' },
+      { internalType: 'string', name: 'cid', type: 'string' },
+      { internalType: 'address', name: 'devWallet', type: 'address' },
+    ],
+    name: 'mintRequest',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'mintPrice',
+    outputs: [
       {
-        inputs: [
-          { internalType: 'string', name: 'data_key', type: 'string' },
-          { internalType: 'string', name: 'version', type: 'string' },
-          { internalType: 'string', name: 'nft_name', type: 'string' },
-          { internalType: 'string', name: 'ipfs_address', type: 'string' },
-          { internalType: 'string', name: 'cid', type: 'string' },
-          { internalType: 'address', name: 'devWallet', type: 'address' },
-        ],
-        name: 'mintRequest',
-        outputs: [],
-        stateMutability: 'payable',
-        type: 'function',
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
-    functionName: 'mintRequest',
-    args: [data_key, version, metadata?.name, import.meta.env.VITE_IPFS_FORK_MULTIADDRESS ?? '', cid, address],
-    value: parseEther('0.015'),
-    onError(error) {
-      console.log('Error', error)
-    },
-  })
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+interface Props {
+  cid: string
+  dataKey: string
+  name: string
+}
 
-  const { data, writeAsync } = useContractWrite(config)
-
-  const { isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-    onSuccess: () => {
-      onForkSuccess()
-      setIsLoading(false)
-    },
-  })
+const ConfirmButton = ({ dataKey, name, cid }: Props) => {
+  const { showError } = useContext(AlertMessageContext)
+  const { nftify, isLoading, error } = useMintRequest()
 
   const onHandleConfirmClicked = async () => {
-    setIsLoading(true)
-
     try {
-      await writeAsync?.()
+      await nftify(dataKey, name, cid)
     } catch (e: unknown) {
       const error = e as Error
       showError(`${error.message}`)
-      setIsLoading(false)
     }
   }
 

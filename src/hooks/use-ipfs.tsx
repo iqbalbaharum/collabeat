@@ -4,6 +4,7 @@ import { create, IPFSHTTPClient } from 'ipfs-http-client'
 
 interface IpfsContextInterface {
   ipfs: any
+  ipfsFork: any
 }
 
 export const IpfsContext = createContext<IpfsContextInterface | undefined>(undefined)
@@ -23,6 +24,7 @@ interface IpfsProviderProps {
 export const IpfsProvider: React.FC<IpfsProviderProps> = ({ children }) => {
   const [isIPFSConnected, setIsIPFSConnected] = useState(false)
   const [ipfs, setIpfs] = useState<NFTStorage>()
+  const [ipfsFork, setIpfsFork] = useState<IPFSHTTPClient>()
 
   useEffect(() => {
     function startIpfs() {
@@ -31,7 +33,12 @@ export const IpfsProvider: React.FC<IpfsProviderProps> = ({ children }) => {
           const NFT_STORAGE_TOKEN = import.meta.env.VITE_NFTSTORAGE_TOKEN ?? ''
           const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
 
+          const forkClient = create({
+            url: import.meta.env.VITE_IPFS_FORK_MULTIADDRESS,
+          })
+
           setIpfs(client)
+          setIpfsFork(forkClient)
           setIsIPFSConnected(Boolean(client))
         } catch (error) {
           console.error('IPFS init error:', error)
@@ -47,7 +54,7 @@ export const IpfsProvider: React.FC<IpfsProviderProps> = ({ children }) => {
   }
 
   return (
-    <IpfsContext.Provider value={{ ipfs }}>
+    <IpfsContext.Provider value={{ ipfs, ipfsFork }}>
       <div>{children}</div>
     </IpfsContext.Provider>
   )

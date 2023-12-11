@@ -27,7 +27,7 @@ export default function Header() {
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <div className="flex gap-5 items-center">
-              <Link to="/create-beat">Create Beat</Link>
+              <Link to="/create-beat">Beat Play</Link>
               {isConnected() ? (
                 <ConnectedWalletInfo />
               ) : (

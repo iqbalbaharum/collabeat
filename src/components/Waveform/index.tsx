@@ -2,6 +2,7 @@ import { PlayerState } from 'lib'
 import { useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { MutedSpeakerIcon, UnmutedSpeakerIcon } from 'components/Icons/icons'
+import { replaceIpfsUrl } from 'utils/conversion'
 
 interface WaveformProps {
   url: string
@@ -11,7 +12,6 @@ interface WaveformProps {
   isSelected?: Boolean
   onToggleSound: (muted: boolean) => void
   onFinish?: () => void
-  onSelectButtonClicked?: () => void
   isMuteButtonHidden?: boolean
 }
 
@@ -23,7 +23,6 @@ const Waveform: React.FC<WaveformProps> = ({
   onFinish,
   isSelecting,
   isSelected,
-  onSelectButtonClicked,
   isMuteButtonHidden,
 }) => {
   const waveformRef = useRef<HTMLDivElement>(null)
@@ -55,7 +54,8 @@ const Waveform: React.FC<WaveformProps> = ({
           scrollParent: false,
         })
 
-        wavesurferRef.current.load(url)
+        const gatewayUrl = replaceIpfsUrl(url)
+        wavesurferRef.current.load(gatewayUrl)
         wavesurferRef.current.setMute(isMuted)
 
         wavesurferRef.current.on('ready', () => {
@@ -114,12 +114,6 @@ const Waveform: React.FC<WaveformProps> = ({
             'bg-yellow-500': !isSelected,
             'bg-green-500': isSelected,
           })}
-          onClick={() => {
-            if (onSelectButtonClicked) {
-              onToggleSound(true)
-              onSelectButtonClicked()
-            }
-          }}
         >
           {!isSelected ? 'Select' : 'Unselect'}
         </button>

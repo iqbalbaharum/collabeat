@@ -13,7 +13,7 @@ export function ConnectedWalletInfo() {
 
   useEffect(() => {
     async function init() {
-      let balance = await getUserBalance()
+      const balance = await getUserBalance()
       setBalance(abbreviateETHBalance(parseFloat(balance as string)))
     }
 

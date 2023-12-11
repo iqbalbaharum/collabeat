@@ -3,7 +3,7 @@ import rpc, { JSONRPCFilter, NftMetadata, Transaction } from '../services/rpc'
 import { useIpfs } from 'hooks/use-ipfs'
 import { RQ_KEY } from 'repositories'
 import { formatDataKey } from 'utils'
-import { LineageTokenMetadata } from 'lib/TokenMetadata'
+import { LineageNftToken, LineageTokenMetadata } from 'lib/TokenMetadata'
 
 const useGetCompleteTransactions = () => {
   return useQuery({
@@ -184,13 +184,26 @@ const useGetNftMetadata = (data_key: string) => {
         '0x01',
         import.meta.env.VITE_CB_METADATA_PK.toLowerCase() as String,
         '',
-        ''
+        data_key
       )
 
       const content = await rpc.getContentFromIpfs(nft_metadata.cid)
-      return JSON.parse(content.data.result.content as string) as LineageTokenMetadata
+      return JSON.parse(content.data.result.content as string).content as LineageTokenMetadata
     },
     enabled: Boolean(data_key),
+  })
+}
+
+const useGetNftToken = (dataKey: string) => {
+  return useQuery<LineageNftToken>({
+    queryKey: [RQ_KEY.GET_NFT_METADATA_TOKEN, dataKey],
+    queryFn: async () => {
+      const nft_metadata = await rpc.getMetadata(dataKey, '0x01', '0x01', 'token', dataKey)
+
+      const content = await rpc.getContentFromIpfs(nft_metadata.cid)
+      return JSON.parse(content.data.result.content as string).content as LineageNftToken
+    },
+    enabled: Boolean(dataKey),
   })
 }
 
@@ -202,4 +215,5 @@ export {
   useGetMetadataBlock,
   useGetBeatsByVersion,
   useGetNftMetadata,
+  useGetNftToken,
 }

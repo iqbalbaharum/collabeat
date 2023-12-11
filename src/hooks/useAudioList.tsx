@@ -9,6 +9,7 @@ interface AudioListContextProps {
   setFilteredData: (data: AudioState[]) => void
   setAllMuted: (muted: boolean) => void
   setAllState: (state: PlayerState) => void
+  onToggleSound: (state: AudioState) => void
 }
 
 export const AudioListContext = createContext<AudioListContextProps | undefined>(undefined)
@@ -46,17 +47,21 @@ export const AudioListProvider = ({ children }: AudioListProviderProps) => {
     )
   }
 
-  // const onToggleSound = (state: AudioState) => {
-  //   const index = filteredData.findIndex(item => item.key === state.key)
-  //   const updatedData = [...filteredData]
+  const onToggleSound = (state: AudioState) => {
+    const index = filteredData.findIndex(item => item.key === state.key)
+    const updatedData = [...filteredData]
 
-  //   updatedData[index] = {
-  //     ...updatedData[index],
-  //     isMuted: !state.isMuted,
-  //   }
+    updatedData[index] = {
+      ...updatedData[index],
+      isMuted: !state.isMuted,
+    }
 
-  //   setFilteredData(updatedData)
-  // }
+    setFilteredData(updatedData)
+  }
+
+  const onFinishCounter = () => {
+    setFinishedCounter(prev => prev - 1)
+  }
 
   useEffect(() => {
     if (finishedCounter === 0) setAllState(PlayerState.STOP)
@@ -64,7 +69,16 @@ export const AudioListProvider = ({ children }: AudioListProviderProps) => {
 
   return (
     <AudioListContext.Provider
-      value={{ loadAudios, canRecord, filteredData, setFilteredData, setAllState, setAllMuted, finishedCounter }}
+      value={{
+        loadAudios,
+        canRecord,
+        filteredData,
+        setFilteredData,
+        setAllState,
+        setAllMuted,
+        finishedCounter,
+        onToggleSound,
+      }}
     >
       {children}
     </AudioListContext.Provider>

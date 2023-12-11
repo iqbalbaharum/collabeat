@@ -5,11 +5,13 @@ import { AlertMessageContext } from 'hooks/use-alert-message'
 import { useConnectedWallet } from 'hooks/use-connected-wallet'
 import { useAudioList } from 'hooks/useAudioList'
 import { SelectedAudio } from 'lib'
+import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { useContext } from 'react'
 import { useBoundStore } from 'store'
 
 interface Prop {
   nftKey: string
+  nft: LineageTokenMetadata
 }
 
 const NFTifyButton = (prop: Prop) => {
@@ -34,7 +36,7 @@ const NFTifyButton = (prop: Prop) => {
       } as SelectedAudio)
     })
 
-    setModalState({ nftify: { isOpen: true, selections } })
+    setModalState({ nftify: { isOpen: true, selections, dataKey: prop.nftKey, nft: prop.nft } })
   }
 
   return <GenericButton name="NFTify" icon={<NftifyIcon />} onClick={toggleNftifyMode} />

@@ -39,8 +39,8 @@ const PageIndex = () => {
             </div>
           </div>
           <div className="w-full flex flex-col gap-2">
-            {data.map(d => (
-              <MusicItem beat={d} />
+            {data.map((d, index) => (
+              <MusicItem key={index} beat={d} />
             ))}
           </div>
         </div>

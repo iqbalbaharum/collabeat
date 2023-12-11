@@ -4,7 +4,7 @@ export interface LineageTokenMetadata {
   description?: string
   image: string
   name: string
-  token: LineageNftToken
+  token?: LineageNftToken
 }
 
 export interface LineageNftToken {
