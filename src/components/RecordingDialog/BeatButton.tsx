@@ -34,7 +34,7 @@ const BeatButton = (prop: Prop) => {
   return (
     <button
       onClick={onHandleClicked}
-      className={`h-20 w-full rounded-md capitalize text-sm font-semibold ${prop.color} ${prop.textColor} ${
+      className={`lg:h-14 h-20 w-full rounded-md capitalize text-sm font-semibold ${prop.color} ${prop.textColor} ${
         !prop.isActive ? `bg-opacity-20 text-opacity-100` : `bg-opacity-60`
       }`}
     >

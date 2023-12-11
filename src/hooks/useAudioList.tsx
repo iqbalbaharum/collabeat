@@ -6,7 +6,7 @@ interface AudioListContextProps {
   finishedCounter: number
   canRecord: boolean
   loadAudios: (audios: AudioState[]) => void
-  setFilteredData: (data: AudioState[]) => void
+  // setFilteredData: (data: AudioState[]) => void
   setAllMuted: (muted: boolean) => void
   setAllState: (state: PlayerState) => void
   onToggleSound: (state: AudioState) => void
@@ -73,7 +73,7 @@ export const AudioListProvider = ({ children }: AudioListProviderProps) => {
         loadAudios,
         canRecord,
         filteredData,
-        setFilteredData,
+        // setFilteredData,
         setAllState,
         setAllMuted,
         finishedCounter,

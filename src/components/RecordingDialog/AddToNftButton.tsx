@@ -32,22 +32,22 @@ const AddToNftButton = () => {
 
   return (
     <>
-      {dialogState === RecordingDialogState.UPLOAD && audioData.url && (
-        <button
-          className="bg-yellow-400 rounded-md text-black flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm"
-          disabled={isLoading}
-          onClick={() => publish(modal.audioRecording.version)}
-        >
-          {isLoading ? (
-            <LoadingSpinner />
-          ) : (
-            <div className="flex flex-col items-center justify-center">
-              <SubmitIcon />
-              Collab
-            </div>
-          )}
-        </button>
-      )}
+      <button
+        className={`${
+          dialogState === RecordingDialogState.UPLOAD && audioData.url ? 'bg-yellow-400' : 'bg-slate-400'
+        }  rounded-md text-black flex flex-col items-center justify-center gap-2 md:px-5 md:hover:scale-105 text-sm`}
+        disabled={isLoading || (dialogState === RecordingDialogState.UPLOAD && audioData.url)}
+        onClick={() => publish(modal.audioRecording.version)}
+      >
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="flex flex-col items-center justify-center">
+            <SubmitIcon />
+            Collab
+          </div>
+        )}
+      </button>
     </>
   )
 }

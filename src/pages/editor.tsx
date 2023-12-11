@@ -10,7 +10,6 @@ import PlaylistList from 'components/Playlist/List'
 import NFTifyButton from 'components/Playlist/NFTifyButton'
 import { AudioDialogProvider } from 'components/RecordingDialog/hooks/useAudioDialog'
 import { useGetNftMetadata, useGetNftToken } from 'repositories/rpc.repository'
-import GenericButton from 'components/Button/GenericButton'
 
 const PageEditor = () => {
   const { nftKey } = useParams()
@@ -29,7 +28,7 @@ const PageEditor = () => {
               <div className="flex items-center justify-between py-5">
                 <div className="flex gap-1 md:gap-2">{nft && <NFTifyButton nftKey={nftKey} nft={nft} />}</div>
                 <div className="ml-2 inline-block">
-                  <GenericButton icon={<ShareIcon />} onClick={() => setIsShareDialogShow(true)} />
+                  {/* <GenericButton icon={<ShareIcon />} onClick={() => setIsShareDialogShow(true)} /> */}
                 </div>
               </div>
             )}

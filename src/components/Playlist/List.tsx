@@ -14,7 +14,6 @@ const PlaylistList = (prop: Prop) => {
 
   const { data: audios } = useGetBeatsByVersion(prop.nftKey, prop.version)
   const { filteredData, loadAudios, onToggleSound } = useAudioList()
-
   useEffect(() => {
     if (audios && !isLoad) {
       const filteredData: AudioState[] = []
@@ -26,7 +25,6 @@ const PlaylistList = (prop: Prop) => {
           playerState: PlayerState.STOP,
         } as AudioState)
       }
-
       loadAudios(filteredData)
       setIsLoad(true)
     }

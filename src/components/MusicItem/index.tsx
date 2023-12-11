@@ -1,12 +1,14 @@
 import GenericButton from 'components/Button/GenericButton'
 import { PlayIcon } from 'components/Icons/icons'
+import { MoreIcon } from 'components/Icons/system'
 import { Nft } from 'lib'
 import { Beat } from 'lib/Beat'
+import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { useBoundStore } from 'store'
 
 interface Prop {
   tokenId: string
-  beat: { name: string; owner: string }
+  metadata: LineageTokenMetadata
 }
 
 const MusicItem = (prop: Prop) => {
@@ -14,28 +16,33 @@ const MusicItem = (prop: Prop) => {
 
   return (
     <>
-      <div className="group/item flex justify-between px-4 py-2.5 bg-white/10 hover:bg-slate-300/10 cursor-pointer backdrop-blur rounded-md">
-        <div className="flex gap-2 items-center">
-          <div className="p-2 rounded-full invisible group-hover/item:visible">
-            <PlayIcon />
+      <div className="px-3 py-1.5 cursor-pointer">
+        <div className="group/item flex justify-between rounded-md">
+          <div className="flex gap-4 items-center">
+            <div className="h-12 w-12 rounded-md flex items-center justify-center">
+              <>
+                <img src={prop.metadata.image} className="h-12 w-12 rounded-md" />
+                <div className="absolute invisible group-hover/item:visible">
+                  <PlayIcon />
+                </div>
+              </>
+            </div>
+            <div>
+              <div className="text-white text-sm">{prop.metadata.name}</div>
+              <div className="text-xs uppercase text-gray-500">2 Collaborators | 8 VOTES</div>
+            </div>
           </div>
-          <div className="h-12 w-12 bg-white/10 rounded-md"></div>
-          <div>
-            <div className="font-semibold text-yellow-400">{prop.beat.name}</div>
-            <div className="text-xs uppercase text-gray-500">{prop.beat.owner}</div>
-          </div>
-        </div>
-        <div className="flex gap-4 items-center">
-          <div className="flex items-center">0.022 ETH</div>
-          <div className="flex gap-2">
-            <GenericButton
-              name="Buy"
-              onClick={() => setModalState({ buyVote: { isOpen: true, tokenId: prop.tokenId } })}
-            />
-            <GenericButton
-              name="Sell"
-              onClick={() => setModalState({ sellVote: { isOpen: true, tokenId: prop.tokenId } })}
-            />
+          <div className="flex gap-4 items-center">
+            <div className="flex items-center text-xs">
+              <button
+                className=""
+                onClick={() =>
+                  setModalState({ moreInfo: { isOpen: true, tokenId: prop.tokenId, metadata: prop.metadata } })
+                }
+              >
+                <MoreIcon />
+              </button>
+            </div>
           </div>
         </div>
       </div>

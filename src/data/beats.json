@@ -94,5 +94,53 @@
     "quadrant": "4nd",
     "name": "snare",
     "url": "https://bafybeieewgx62wq2jwmkd4avxhavrww3jnnddt7zvncnz2avyzluokiviu.ipfs.nftstorage.link/Snare%204.wav"
+  },
+  {
+    "id": 17,
+    "quadrant": "5th",
+    "name": "clap",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Clap%201.wav"
+  },
+  {
+    "id": 18,
+    "quadrant": "5th",
+    "name": "clap",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Clap%202.wav"
+  },
+  {
+    "id": 19,
+    "quadrant": "6th",
+    "name": "kick",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Kick%201.wav"
+  },
+  {
+    "id": 20,
+    "quadrant": "6th",
+    "name": "kick",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Kick%202.wav"
+  },
+  {
+    "id": 21,
+    "quadrant": "5th",
+    "name": "clap",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Clap%203.wav"
+  },
+  {
+    "id": 22,
+    "quadrant": "5th",
+    "name": "clap",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Clap%204.wav"
+  },
+  {
+    "id": 23,
+    "quadrant": "6th",
+    "name": "kick",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Kick%203.wav"
+  },
+  {
+    "id": 24,
+    "quadrant": "6th",
+    "name": "kick",
+    "url": "https://bafybeia2lrv7u77xit3uidt7ed5gn2rerwdjki2p7udx6ttrcc36l2zx5a.ipfs.nftstorage.link/Kick%204.wav"
   }
 ]

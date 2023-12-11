@@ -1,9 +1,11 @@
 import GenericButton from 'components/Button/GenericButton'
 import { PlayIcon } from 'components/Icons/icons'
 import SearchInput from 'components/Input/Search'
+import MarketplaceMore from 'components/Marketplace/More'
 import MusicItem from 'components/MusicItem'
 import MusicItemBuyDialog from 'components/MusicItem/BuyDialog'
 import MusicItemSellDialog from 'components/MusicItem/SellDialog'
+import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -11,22 +13,21 @@ const json = [
   {
     tokenId: '0',
     name: 'CB #1',
-    owner: '0x41871CD045BdB7c64F8B97b88500E829c8b8a859',
+    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
   },
   {
     tokenId: '1',
     name: 'CB #2',
-    owner: '0x41871CD045BdB7c64F8B97b88500E829c8b8a859',
+    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
   },
   {
     tokenId: '2',
     name: 'CB #3',
-    owner: '0x41871CD045BdB7c64F8B97b88500E829c8b8a859',
+    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
   },
   {
-    tokenId: '3',
     name: 'CB #4',
-    owner: '0x41871CD045BdB7c64F8B97b88500E829c8b8a859',
+    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
   },
 ]
 const PageIndex = () => {
@@ -34,7 +35,7 @@ const PageIndex = () => {
 
   return (
     <>
-      <div className="w-4/5 mx-auto">
+      <div className="w-full mx-auto">
         <div className="mt-5 w-full">
           <div className="mt-5 mb-2 border border-gray-700 rounded-md px-4 py-2.5 bg-white/10 backdrop-blur">
             <div className="flex gap-2 items-center">
@@ -42,15 +43,16 @@ const PageIndex = () => {
               <GenericButton name="New Beat" onClick={() => {}} />
             </div>
           </div>
-          <div className="w-full flex flex-col gap-2">
+          <div className="w-full flex flex-col">
             {data.map((d, index) => (
-              <MusicItem key={index} beat={d} tokenId={d.tokenId} />
+              <MusicItem key={index} metadata={d as LineageTokenMetadata} tokenId={d.tokenId as string} />
             ))}
           </div>
         </div>
       </div>
       <MusicItemBuyDialog />
       <MusicItemSellDialog />
+      <MarketplaceMore />
     </>
   )
 }

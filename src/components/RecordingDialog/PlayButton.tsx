@@ -8,6 +8,9 @@ const PlayButton = () => {
   const { audioRef, audioData } = useAudioDialog()
 
   const onHandlePlayClicked = () => {
+    if (audioData.url.length <= 0) {
+      return
+    }
     if (audioRef) {
       audioRef.current.play()
       setIsRecordedPlaying(true)
@@ -28,27 +31,28 @@ const PlayButton = () => {
 
   return (
     <div className="flex items-center justify-center">
-      {audioData.url.length > 0 && (
-        <>
-          {isRecordedPlaying ? (
-            <button
-              className="rounded-md capitalize py-2.5 px-2 flex flex-col items-center justify-center gap-2"
-              onClick={onHandleStopClicked}
-            >
-              <StopIcon />
-              Stop
-            </button>
-          ) : (
-            <button
-              className="capitalize text-yellow-400 py-2.5 px-2 flex flex-col items-center gap-2 justify-center"
-              onClick={onHandlePlayClicked}
-            >
-              <PlayIcon />
-              Play
-            </button>
-          )}
-        </>
-      )}
+      <>
+        {isRecordedPlaying ? (
+          <button
+            className="rounded-md capitalize py-2.5 px-2 flex flex-col items-center justify-center gap-2"
+            onClick={onHandleStopClicked}
+          >
+            <StopIcon />
+            Stop
+          </button>
+        ) : (
+          <button
+            className={`capitalize py-2.5 px-2 flex flex-col items-center gap-2 justify-center ${
+              audioData.url.length > 0 ? 'text-yellow-400' : 'text-slate-400'
+            }`}
+            disabled={audioData.url.length <= 0}
+            onClick={onHandlePlayClicked}
+          >
+            <PlayIcon />
+            Play
+          </button>
+        )}
+      </>
     </div>
   )
 }

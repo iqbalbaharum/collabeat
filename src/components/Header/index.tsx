@@ -16,13 +16,13 @@ export default function Header() {
 
   return (
     <Disclosure as="nav" className="bg-transparent">
-      <div className="mx-auto max-w-[3840px] py-5">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="flex flex-1 items-center sm:items-stretch justify-between">
+      <div className="mx-auto">
+        <div className="relative flex h-16 items-center">
+          <div className="w-full flex flex-1 items-center sm:items-stretch justify-between">
             <div className="flex flex-shrink-0 items-center gap-4">
               <Link to="/">
-                <img className="block h-10 w-auto lg:hidden" src={logo} alt="Collabeat" />
-                <img className="hidden h-10 w-auto lg:block" src={logoSmall} alt="Collabeat" />
+                <img className="block h-10 w-auto lg:hidden" src={logoSmall} alt="Collabeat" />
+                <img className="hidden h-10 w-auto lg:block" src={logo} alt="Collabeat" />
               </Link>
             </div>
             <div className="flex gap-2 items-center">
@@ -41,7 +41,6 @@ export default function Header() {
               )}
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0"></div>
         </div>
       </div>
     </Disclosure>

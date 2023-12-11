@@ -19,7 +19,7 @@ const NewRecording = () => {
 
   return (
     <>
-      <div className="w-full text-center">
+      <div className="w-full text-center flex flex-col h-full">
         <div className="py-2 grid grid-cols-4">
           <div className="flex items-center justify-center">
             {(dialogState === RecordingDialogState.START || dialogState === RecordingDialogState.UPLOAD) && (
@@ -44,7 +44,7 @@ const NewRecording = () => {
           &nbsp;
           <AddToNftButton />
         </div>
-        <div className="mt-2 grid grid-cols-4 gap-2 w-full">
+        <div className="mt-2 grid grid-cols-4 gap-2 w-full ">
           {beats.map((beat, index) => (
             <BeatButton
               key={index}
@@ -58,20 +58,24 @@ const NewRecording = () => {
         </div>
 
         {dialogState === RecordingDialogState.COUNTDOWN && (
-          <div className="my-16">
-            <CountdownTimer />
+          <div className="flex-grow h-full">
+            <div className="flex h-full justify-center items-center">
+              <CountdownTimer />
+            </div>
           </div>
         )}
         {dialogState === RecordingDialogState.RECORD && (
-          <button
-            className="mt-3 inline-flex items-center gap-2 rounded-full bg-indigo-600 py-3 px-8 text-white"
-            onClick={onHandleStop}
-          >
-            <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 6h6v12H9V6zM19 12.5c0 1.4-.4 2.7-1 3.9l1.4 1.4c1.1-1.9 1.6-4.1 1.6-5.3 0-1.2-.5-3.4-1.6-5.3L18 8.6c.6 1.2 1 2.5 1 3.9zm-9 0c0-1.4.4-2.7 1-3.9L8.6 7.2C7.5 9.1 7 11.3 7 12.5c0 1.2.5 3.4 1.6 5.3l1.4-1.4c-.6-1.2-1-2.5-1-3.9z" />
-            </svg>
-            <span className="font-medium"> Stop Recording</span>
-          </button>
+          <div className="flex h-full justify-center items-center">
+            <button
+              className="mt-3 inline-flex items-center gap-2 rounded-full bg-indigo-600 py-3 px-8 text-white"
+              onClick={onHandleStop}
+            >
+              <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 6h6v12H9V6zM19 12.5c0 1.4-.4 2.7-1 3.9l1.4 1.4c1.1-1.9 1.6-4.1 1.6-5.3 0-1.2-.5-3.4-1.6-5.3L18 8.6c.6 1.2 1 2.5 1 3.9zm-9 0c0-1.4.4-2.7 1-3.9L8.6 7.2C7.5 9.1 7 11.3 7 12.5c0 1.2.5 3.4 1.6 5.3l1.4-1.4c-.6-1.2-1-2.5-1-3.9z" />
+              </svg>
+              <span className="font-medium"> Stop Recording</span>
+            </button>
+          </div>
         )}
       </div>
     </>

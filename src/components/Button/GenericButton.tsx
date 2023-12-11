@@ -13,7 +13,7 @@ const GenericButton = ({ name, onClick, icon, className, disabled, color, textCo
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`relative ring-1 ring-white/30 shadow-white inline-flex items-center justify-center px-4 py-3 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out rounded-md group hover:ring-1 hover:ring-purple-500 ${
+      className={`relative ring-1 ring-white/30 shadow-white inline-flex items-center justify-center px-2 py-1 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out rounded-md group hover:ring-1 hover:ring-purple-500 ${
         className ?? ''
       } ${disabled ? 'cursor-not-allowed bg-slate-500' : 'bg-white cursor-pointer'}`}
     >
