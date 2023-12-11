@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { ConnectedWalletInfo } from './ConnectedWalletInfo'
 import { useWeb3Auth } from 'hooks/use-web3auth'
 import logo from '/img/logo.png'
+import logoSmall from '/img/logo-small.png'
 
 export default function Header() {
   const { connect, isConnected } = useWeb3Auth()
@@ -21,10 +22,10 @@ export default function Header() {
             <div className="flex flex-shrink-0 items-center gap-4">
               <Link to="/">
                 <img className="block h-10 w-auto lg:hidden" src={logo} alt="Collabeat" />
-                <img className="hidden h-10 w-auto lg:block" src={logo} alt="Collabeat" />
+                <img className="hidden h-10 w-auto lg:block" src={logoSmall} alt="Collabeat" />
               </Link>
             </div>
-            <div className="flex gap-5 items-center">
+            <div className="flex gap-2 items-center">
               <Link to="/create-beat" className="bg-yellow-600 px-4 py-2 font-bold font-lg rounded-lg">
                 Beat Play
               </Link>
@@ -33,9 +34,9 @@ export default function Header() {
               ) : (
                 <button
                   onClick={() => onClickLogin()}
-                  className="rounded-sm bg-gradient-to-t from-[#7224A7] to-[#FF3065] px-4 py-2"
+                  className="rounded-lg bg-gradient-to-t from-[#7224A7] to-[#FF3065] px-4 py-2"
                 >
-                  Connect Wallet
+                  Login
                 </button>
               )}
             </div>

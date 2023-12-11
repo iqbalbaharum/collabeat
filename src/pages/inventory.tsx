@@ -16,10 +16,10 @@ const PageInventory = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="block w-full md:w-full lg:w-full mx-2">
-        <div className="bg-[#181818] rounded p-4">
-          <div className="bg-[#181818] rounded p-4">
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="block w-full mx-2">
+        <div className="bg-[#181818] rounded">
+          <div className="bg-[#181818] rounded p-2">
+            <div className="grid gap-2 grid-cols-2">
               {nfts &&
                 nfts.map((nft, index) => (
                   <div
