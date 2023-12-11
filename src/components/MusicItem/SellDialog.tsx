@@ -24,7 +24,7 @@ const MusicItemSellDialog = () => {
     })
   }
 
-  const onClickSubscribe = () => {
+  const onClickUnSubscribe = () => {
     try {
       // await subscribe(modal.subscribe.tokenId, amount)
       // setModalState({
@@ -56,43 +56,43 @@ const MusicItemSellDialog = () => {
           <div className={`fixed inset-0 bg-blue-800/40 backdrop-blur`} aria-hidden="true" />
         </Transition.Child>
 
-        <Transition.Child
-          as={Fragment}
-          enter="transition ease-out duration-300 transform"
-          enterFrom="opacity-0 translate-y-full"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-200 transform"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-full"
-        >
-          <div className="fixed sm:w-full sm:bottom-0 lg:w-2/4 lg:-translate-x-1/2 lg:left-1/2 lg:top-1/2 -translate-y-1/2 transform rounded-lg bg-slate-900 text-white lg:h-2/5 sm:h-1/2 sm:max-w-md">
-            <Dialog.Panel className="h-full">
-              <div
-                className={`p-4 ring-1 ring-white backdrop-blur border shadow-2xl h-full border-slate-600 flex flex-col`}
-              >
-                <h3 className="text-lg font-bold">Sell</h3>
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="text-center flex flex-col gap-1">
-                    Vote Amount
-                    <QuantityInput input={amount} setInput={setAmount} />
+        <div className="max-w-md mx-auto fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="transition ease-out duration-300 transform"
+              enterFrom="opacity-0 translate-y-full"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-200 transform"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-full"
+            >
+              <Dialog.Panel className="w-full h-1/3 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
+                <div className="flex flex-col p-4 text-white h-full">
+                  <h3 className="text-lg font-bold">Unstake to unpromote this beat</h3>
+                  <h5 className="text-md">By unstake this beat, it would possibly drop rank</h5>
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center flex flex-col gap-1">
+                      <QuantityInput input={amount} setInput={setAmount} />
+                    </div>
+                  </div>
+                  <div className="my-3 pr-3 w-full text-right">
+                    <h3>Total Refund: {sellPrice ?? 0} ETH</h3>
+                    <h3>Total Refund After Fee: {sellPriceAfterTax ?? 0} ETH</h3>
+                    <div className="text-center flex justify-end gap-2 mt-2">
+                      <AccentButton
+                        name={!isLoading ? `Unstake` : `Processing`}
+                        disabled={isLoading}
+                        onClick={onClickUnSubscribe}
+                      />
+                      <GenericButton name="Cancel" onClick={onCloseModal} />
+                    </div>
                   </div>
                 </div>
-                <div className="my-3 pr-3 w-full text-right">
-                  <h3>Received Price: {sellPrice ?? 0} ETH</h3>
-                  <h3>Received Price After Fee: {sellPriceAfterTax ?? 0} ETH</h3>
-                  <div className="text-center flex justify-end gap-2 mt-2">
-                    <AccentButton
-                      name={!isLoading ? `Subscribe` : `Processing`}
-                      disabled={isLoading}
-                      onClick={onClickSubscribe}
-                    />
-                    <GenericButton name="Cancel" onClick={onCloseModal} />
-                  </div>
-                </div>
-              </div>
-            </Dialog.Panel>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
-        </Transition.Child>
+        </div>
       </Dialog>
     </Transition>
   )
