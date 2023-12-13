@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import RPC from 'utils/ethers'
-import collabeatAbi from 'data/collabeat_abi.json'
+import patreonAbi from 'data/NFT1155PatreonV1.json'
 
 interface Prop {
   tokenId: string
@@ -27,8 +27,8 @@ const useGetSellPrice = ({ tokenId, amount }: Prop) => {
       const rpc = new RPC((window as any).ethereum)
 
       const price: string = await rpc.readContractData({
-        contractABI: collabeatAbi,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractABI: patreonAbi,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'getSellPrice',
         data: [tokenId, amount.toString()],
       })
@@ -37,6 +37,7 @@ const useGetSellPrice = ({ tokenId, amount }: Prop) => {
 
       setSellPrice(subscribePrice.toString())
     } catch (error: any) {
+      console.log(error)
       setError(error.reason as string)
       throw new Error(error.reason as string)
     } finally {
@@ -57,8 +58,8 @@ const useGetSellPrice = ({ tokenId, amount }: Prop) => {
       const rpc = new RPC((window as any).ethereum)
 
       const price: string = await rpc.readContractData({
-        contractABI: collabeatAbi,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractABI: patreonAbi,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'getSellPriceAfterFee',
         data: [tokenId, amount.toString()],
       })

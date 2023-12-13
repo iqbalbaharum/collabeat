@@ -4,7 +4,7 @@ import UserModal from 'components/UserModal'
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="container md:max-w-md mx-auto h-screen text-white pb-[100px] px-2">
+    <div className="container md:max-w-md mx-auto h-screen text-white pb-[100px]">
       <Header />
       <Outlet />
       <UserModal />

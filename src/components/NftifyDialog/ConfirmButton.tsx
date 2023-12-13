@@ -1,11 +1,12 @@
 import { LoadingSpinner } from 'components/Icons/icons'
 import { AlertMessageContext } from 'hooks/use-alert-message'
 import { useWeb3Auth } from 'hooks/use-web3auth'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useBoundStore } from 'store'
 import { parseEther } from 'viem'
 import { useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import useMintRequest from './hooks/useMintRequest'
+import AccentButton from 'components/Button/AccentButton'
 
 const abis = [
   {
@@ -40,15 +41,18 @@ interface Props {
   cid: string
   dataKey: string
   name: string
+  onNftifySuccess: () => void
 }
 
-const ConfirmButton = ({ dataKey, name, cid }: Props) => {
-  const { showError } = useContext(AlertMessageContext)
-  const { nftify, isLoading, error } = useMintRequest()
+const ConfirmButton = ({ dataKey, name, cid, onNftifySuccess }: Props) => {
+  const { showSuccess, showError } = useContext(AlertMessageContext)
+  const { nftify, isLoading } = useMintRequest()
 
   const onHandleConfirmClicked = async () => {
     try {
       await nftify(dataKey, name, cid)
+      onNftifySuccess()
+      showSuccess(`Successfully turn your beat(s) to NFT`)
     } catch (e: unknown) {
       const error = e as Error
       showError(`${error.message}`)
@@ -56,13 +60,11 @@ const ConfirmButton = ({ dataKey, name, cid }: Props) => {
   }
 
   return (
-    <button
-      className="mr-2 bg-green-500 px-5 py-3 text-white"
-      disabled={isLoading}
+    <AccentButton
+      name={isLoading ? '' : 'Confirm'}
+      icon={isLoading ? <LoadingSpinner /> : ''}
       onClick={() => onHandleConfirmClicked()}
-    >
-      {isLoading ? <LoadingSpinner /> : 'Confirm'}
-    </button>
+    />
   )
 }
 

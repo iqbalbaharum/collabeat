@@ -6,9 +6,11 @@ import { ethers } from 'ethers'
 const useMintRequest = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const nftify = useCallback(async (dataKey: string, name: string, cid: string) => {
     setIsLoading(true)
+    setIsSuccess(false)
 
     try {
       const rpc = new RPC((window as any).ethereum)
@@ -33,6 +35,7 @@ const useMintRequest = () => {
         }
       )
       await tx.wait()
+      setIsSuccess(true)
     } catch (error: any) {
       setError(error.reason as string)
       throw new Error(error.reason as string)
@@ -41,7 +44,7 @@ const useMintRequest = () => {
     }
   }, [])
 
-  return { nftify, isLoading, error }
+  return { nftify, isLoading, isSuccess, error }
 }
 
 export default useMintRequest

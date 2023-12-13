@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { useCallback, useState } from 'react'
 import RPC from 'utils/ethers'
-import contractABI from 'data/collabeat_abi.json'
+import contractABI from 'data/NFT1155PatreonV1.json'
 
 const useSubscription = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -16,7 +16,7 @@ const useSubscription = () => {
 
       const supply: string = await rpc.readContractData({
         contractABI,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'keySupply',
         data: [tokenId],
       })
@@ -26,7 +26,7 @@ const useSubscription = () => {
       if (Number(supply) > 0) {
         const price: string = await rpc.readContractData({
           contractABI,
-          contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+          contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
           method: 'getBuyPriceAfterFee',
           data: [tokenId, amount.toString()],
         })
@@ -36,7 +36,7 @@ const useSubscription = () => {
 
       await rpc.callContractMethod({
         contractABI,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'buyKey',
         data: [tokenId, amount.toString()],
         options: {
@@ -44,7 +44,6 @@ const useSubscription = () => {
         },
       })
     } catch (error: any) {
-      console.log(error)
       setError(error.reason as string)
       throw new Error(error.reason as string)
     } finally {
@@ -64,7 +63,6 @@ const useSubscription = () => {
       const tx = await contract.sellKey(tokenId, amount.toString())
       await tx.wait()
     } catch (error: any) {
-      console.log(error)
       setError(error.reason as string)
       throw new Error(error.reason as string)
     } finally {

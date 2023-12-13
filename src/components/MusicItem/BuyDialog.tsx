@@ -6,10 +6,12 @@ import useSubscription from './hooks/useSubscription'
 import QuantityInput from 'components/QuantityInput'
 import useGetBuyPrice from './hooks/useGetBuyPrice'
 import AccentButton from 'components/Button/AccentButton'
+import { useAlertMessage } from 'hooks/use-alert-message'
 
 const MusicItemBuyDialog = () => {
   const [amount, setAmount] = useState(0)
 
+  const { showSuccess, showError } = useAlertMessage()
   const { subscribe, isLoading } = useSubscription()
   const { modal, setModalState } = useBoundStore()
   const { buyPrice, buyPriceAfterTax } = useGetBuyPrice({
@@ -24,20 +26,12 @@ const MusicItemBuyDialog = () => {
     })
   }
 
-  const onClickSubscribe = () => {
+  const onClickSubscribe = async () => {
     try {
-      // await subscribe(modal.subscribe.tokenId, amount)
-      // setModalState({
-      //   alert: {
-      //     isOpen: true,
-      //     state: 'success',
-      //     message: `Succesfully subscribed to Nous Psyche #${modal.subscribe.tokenId}`,
-      //   },
-      // })
+      await subscribe(modal.buyVote.tokenId, amount)
+      showSuccess(`Succesfully boost #${modal.buyVote.tokenId}`)
     } catch (e) {
-      // setModalState({
-      //   alert: { isOpen: true, state: 'failed', message: `Subscription purchased failed` },
-      // })
+      showError(`Boost failed: ${e}`)
     }
   }
 
@@ -69,19 +63,21 @@ const MusicItemBuyDialog = () => {
             >
               <Dialog.Panel className="w-full h-2/5 fixed max-w-md bottom-0 text-center transform overflow-hidden bg-blue-900 align-middle shadow-xl transition-all">
                 <div className="flex flex-col p-4 text-white h-full">
-                  <h3 className="text-lg font-bold">Stake to promote this beat</h3>
-                  <h5 className="text-md">The more you promote, the higher the ranks</h5>
+                  <h3 className="text-lg font-bold">Stake to boost this beat</h3>
+                  <h5 className="text-md">The more you boost, the higher the ranks</h5>
                   <div className="flex-1 flex items-center justify-center">
                     <div className="text-center flex flex-col gap-1">
                       <QuantityInput input={amount} setInput={setAmount} />
                     </div>
                   </div>
                   <div className="my-3 pr-3 w-full text-right">
-                    <h3>Total Price: {buyPrice ?? 0} ETH</h3>
-                    <h3>Total Price After Fee: {buyPriceAfterTax ?? 0} ETH</h3>
+                    <h5 className="text-xs uppercase text-yellow-400">Total Price</h5>
+                    <h3>{buyPrice ?? 0} ETH</h3>
+                    <h5 className="text-xs uppercase text-yellow-400 mt-1">Total Price After Fee</h5>
+                    <h3>{buyPriceAfterTax ?? 0} ETH</h3>
                     <div className="text-center flex justify-end gap-2 mt-2">
                       <AccentButton
-                        name={!isLoading ? `Stake` : `Processing`}
+                        name={!isLoading ? `Boost` : `Processing`}
                         disabled={isLoading}
                         onClick={onClickSubscribe}
                       />

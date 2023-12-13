@@ -25,10 +25,10 @@ const UserModal = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className={`fixed inset-0 bg-blue-800/40 backdrop-blur`} aria-hidden="true" />
+          <div className={`fixed inset-0 bg-blue-800/40 backdrop-blur z-10`} aria-hidden="true" />
         </Transition.Child>
 
-        <div className="max-w-md mx-auto fixed inset-0 overflow-y-auto">
+        <div className="max-w-md mx-auto fixed inset-0 overflow-y-auto z-20">
           <div className="flex min-h-full items-center justify-center text-center">
             <Transition.Child
               as={Fragment}

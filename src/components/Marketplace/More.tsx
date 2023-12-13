@@ -44,10 +44,10 @@ const MarketplaceMore = () => {
                         <BoostIcon /> Boost
                       </button>
                       <button
-                        className="text-xl flex items-center gap-3 font-semibold text-purple-400"
+                        className="text-md flex items-center gap-3 font-semibold text-purple-400"
                         onClick={() => setModalState({ sellVote: { isOpen: true, tokenId: modal.moreInfo.tokenId } })}
                       >
-                        <UnboostIcon /> Release Boost
+                        <UnboostIcon /> Unboost
                       </button>
                       <button
                         className="text-md flex items-center gap-3 font-semibold"

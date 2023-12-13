@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import RPC from 'utils/ethers'
-import collabeatAbi from 'data/collabeat_abi.json'
+import patreonAbi from 'data/NFT1155PatreonV1.json'
 
 interface Prop {
   tokenId: string
@@ -27,8 +27,8 @@ const useGetBuyPrice = ({ tokenId, amount }: Prop) => {
       const rpc = new RPC((window as any).ethereum)
 
       const price: string = await rpc.readContractData({
-        contractABI: collabeatAbi,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractABI: patreonAbi,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'getBuyPrice',
         data: [tokenId, amount.toString()],
       })
@@ -56,8 +56,8 @@ const useGetBuyPrice = ({ tokenId, amount }: Prop) => {
       const rpc = new RPC((window as any).ethereum)
 
       const price: string = await rpc.readContractData({
-        contractABI: collabeatAbi,
-        contractAddress: import.meta.env.VITE_NOUS_AIFI as string,
+        contractABI: patreonAbi,
+        contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
         method: 'getBuyPriceAfterFee',
         data: [tokenId, amount.toString()],
       })
@@ -65,6 +65,7 @@ const useGetBuyPrice = ({ tokenId, amount }: Prop) => {
       const subscribePrice = price === '0' ? `0` : ethers.formatEther(price.toString())
       setBuyPriceAfterTax(subscribePrice.toString())
     } catch (error: any) {
+      console.log(error)
       setError(error.reason as string)
       throw new Error(error.reason as string)
     } finally {
