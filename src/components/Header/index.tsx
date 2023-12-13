@@ -15,7 +15,7 @@ export default function Header() {
   }
 
   return (
-    <Disclosure as="nav" className="bg-white/10">
+    <Disclosure as="nav" className="bg-transparent">
       <div className="mx-auto">
         <div className="relative flex h-16 items-center px-2.5">
           <div className="w-full flex flex-1 items-center sm:items-stretch justify-between">
