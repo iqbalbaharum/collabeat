@@ -4,9 +4,10 @@ import { formatDataKey } from 'utils'
 export type MintedNft = {
   data: string
   id: string
-  to: string
   tokenId: string
-  transactionHash: string
+  metadataURI: string
+  createdTimestamp: number
+  owner: { id: string }
 }
 
 export function decodeMinted(data: string) {

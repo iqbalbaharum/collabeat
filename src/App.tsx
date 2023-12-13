@@ -17,7 +17,6 @@ import { AlertMessageProvider } from 'hooks/use-alert-message'
 // Router
 import { Route, Routes } from 'react-router-dom'
 
-import PageIndex from 'pages'
 import PageEditor from 'pages/editor'
 import PageNft from 'pages/nft'
 import PageInventory from 'pages/inventory'
@@ -26,6 +25,7 @@ import SignInModal from 'components/Modal/SignInModal'
 import PublicLayout from 'layouts/PublicLayout'
 import PageShareEditor from 'pages/share'
 import { Web3AuthProvider } from 'hooks/use-web3auth'
+import PagePlayList from 'pages/PlayList'
 
 const App = () => {
   return (
@@ -34,7 +34,7 @@ const App = () => {
         <ApiProvider>
           <Routes>
             <Route element={<MainLayout children={undefined} />}>
-              <Route path="/" element={<PageIndex />} />
+              <Route path="/" element={<PagePlayList />} />
               <Route path="/nft" element={<PageNft />} />
               <Route path="/editor/:nftKey" element={<PageEditor />} />
               <Route path="/create-beat" element={<PageInventory />} />

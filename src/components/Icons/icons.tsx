@@ -155,6 +155,7 @@ export const ShareIcon = () => {
     </svg>
   )
 }
+
 export const DownloadIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="mb-1 h-6 w-6">

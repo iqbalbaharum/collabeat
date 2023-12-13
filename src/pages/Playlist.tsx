@@ -30,7 +30,7 @@ const json = [
     image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
   },
 ]
-const PageIndex = () => {
+const PagePlayList = () => {
   const [data, setData] = useState(json)
 
   return (
@@ -43,7 +43,7 @@ const PageIndex = () => {
               <GenericButton name="New Beat" onClick={() => {}} />
             </div>
           </div>
-          <div className="w-full flex flex-col">
+          <div className="w-full flex flex-col gap-3">
             {data.map((d, index) => (
               <MusicItem key={index} metadata={d as LineageTokenMetadata} tokenId={d.tokenId as string} />
             ))}
@@ -57,4 +57,4 @@ const PageIndex = () => {
   )
 }
 
-export default PageIndex
+export default PagePlayList

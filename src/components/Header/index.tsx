@@ -15,14 +15,18 @@ export default function Header() {
   }
 
   return (
-    <Disclosure as="nav" className="bg-transparent">
+    <Disclosure as="nav" className="bg-white/10">
       <div className="mx-auto">
-        <div className="relative flex h-16 items-center">
+        <div className="relative flex h-16 items-center px-2.5">
           <div className="w-full flex flex-1 items-center sm:items-stretch justify-between">
             <div className="flex flex-shrink-0 items-center gap-4">
               <Link to="/">
                 <img className="block h-10 w-auto lg:hidden" src={logoSmall} alt="Collabeat" />
-                <img className="hidden h-10 w-auto lg:block" src={logo} alt="Collabeat" />
+                <img
+                  className="hidden h-10 w-auto lg:block ring-1 ring-slate-800/90 rounded-lg"
+                  src={logoSmall}
+                  alt="Collabeat"
+                />
               </Link>
             </div>
             <div className="flex gap-2 items-center">

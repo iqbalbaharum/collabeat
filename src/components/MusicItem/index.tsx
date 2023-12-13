@@ -16,20 +16,20 @@ const MusicItem = (prop: Prop) => {
 
   return (
     <>
-      <div className="px-3 py-1.5 cursor-pointer">
+      <div className="cursor-pointer">
         <div className="group/item flex justify-between rounded-md">
           <div className="flex gap-4 items-center">
-            <div className="h-12 w-12 rounded-md flex items-center justify-center">
+            <div className="rounded-md flex items-center justify-center">
               <>
-                <img src={prop.metadata.image} className="h-12 w-12 rounded-md" />
+                <img src={prop.metadata.image} className="h-16 w-16 rounded-sm" />
                 <div className="absolute invisible group-hover/item:visible">
                   <PlayIcon />
                 </div>
               </>
             </div>
             <div>
-              <div className="text-white text-sm">{prop.metadata.name}</div>
-              <div className="text-xs uppercase text-gray-500">2 Collaborators | 8 VOTES</div>
+              <div className="text-white text-lg font-semibold">{prop.metadata.name}</div>
+              <div className="text-xs uppercase text-slate-400">2 Collaborators | 8 VOTES</div>
             </div>
           </div>
           <div className="flex gap-4 items-center">
