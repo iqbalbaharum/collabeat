@@ -207,6 +207,34 @@ const useGetNftToken = (dataKey: string) => {
   })
 }
 
+const fetchBeats = async (tokenId: string) => {
+  const dataKey = formatDataKey(
+    import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
+    import.meta.env.VITE_COLLABEAT_NFT as string,
+    tokenId
+  )
+
+  console.log(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, '')
+
+  const [result_metadata, result_beats] = await Promise.all([
+    rpc.getMetadata(dataKey, '0x01', '0x01', '', dataKey),
+    rpc.getMetadataUseKeyByBlock(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, ''),
+  ])
+
+  console.log([result_metadata, result_beats])
+  // const cid_metadata = result_metadata ? result_metadata.cid : ''
+
+  // const promises: any[] = [
+  //   cid_metadata ? rpc.getContentFromIpfs(cid_metadata) : undefined,
+  //   cid_nous_storage ? rpc.getContentFromIpfs(cid_nous_storage) : undefined,
+  //   cid_nous_metadata ? rpc.getContentFromIpfs(cid_nous_metadata) : undefined,
+  //   cid_nous_level ? rpc.getContentFromIpfs(cid_nous_level) : undefined,
+  //   cid_nous_badge ? rpc.getContentFromIpfs(cid_nous_badge) : undefined,
+  // ]
+
+  // const result = await Promise.all(promises)
+}
+
 export {
   useGetCompleteTransactions,
   useGetTransactions,
@@ -216,4 +244,5 @@ export {
   useGetBeatsByVersion,
   useGetNftMetadata,
   useGetNftToken,
+  fetchBeats,
 }

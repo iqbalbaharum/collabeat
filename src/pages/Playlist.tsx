@@ -6,30 +6,10 @@ import MusicItemSellDialog from 'components/MusicItem/SellDialog'
 import Player from 'components/Player'
 import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { useState } from 'react'
+import { useGetNfts } from 'repositories/token.repository'
 
-const json = [
-  {
-    tokenId: '0',
-    name: 'CB #1',
-    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
-  },
-  {
-    tokenId: '1',
-    name: 'CB #2',
-    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
-  },
-  {
-    tokenId: '2',
-    name: 'CB #3',
-    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
-  },
-  {
-    name: 'CB #4',
-    image: 'https://ipfs.io/ipfs/bafybeifr3goy55mfswo2tzhtkpvgiubgv5ib2ko6slfe6haegpctyawnai/2882.jpg',
-  },
-]
 const PagePlayList = () => {
-  const [data, setData] = useState(json)
+  const { data } = useGetNfts(10, 0)
 
   return (
     <>
@@ -42,9 +22,9 @@ const PagePlayList = () => {
             </div>
           </div> */}
           <div className="w-full flex flex-col gap-3 lg:gap-4">
-            {data.map((d, index) => (
+            {/* {data && data.map((d, index) => (
               <MusicItem key={index} metadata={d as LineageTokenMetadata} tokenId={d.tokenId as string} />
-            ))}
+            ))} */}
           </div>
         </div>
       </div>
