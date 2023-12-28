@@ -15,7 +15,7 @@ const PlaylistList = (prop: Prop) => {
   const { data: audios } = useGetBeatsByVersion(prop.nftKey, prop.version)
   const { filteredData, loadAudios, onToggleSound } = useAudioList()
   useEffect(() => {
-    if (audios && !isLoad) {
+    if (audios) {
       const filteredData: AudioState[] = []
       for (const meta of audios) {
         filteredData.push({
@@ -28,7 +28,7 @@ const PlaylistList = (prop: Prop) => {
       loadAudios(filteredData)
       setIsLoad(true)
     }
-  }, [audios, isLoad, loadAudios])
+  }, [audios])
   return (
     <>
       <div className="w-full">
