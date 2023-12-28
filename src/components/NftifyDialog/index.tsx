@@ -91,7 +91,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
                           <ConfirmButton
                             cid={uploadedCid}
                             dataKey={modal.nftify.dataKey}
-                            name={modal.nftify.nft?.name as string}
+                            name={modal.nftify.nft?.metadata.name as string}
                             onNftifySuccess={onDialogClosed}
                           />
                         )}

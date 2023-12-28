@@ -273,7 +273,6 @@ const PageShareEditor = () => {
                         onToggleSound={() => onToggleSound(audioState)}
                         isSelecting={false}
                         isSelected={audioState.selected}
-                        onSelectButtonClicked={() => onToggleSelection(audioState)}
                         onFinish={() => setFinishedCounter(prev => prev - 1)}
                       />
                     </div>
@@ -286,19 +285,7 @@ const PageShareEditor = () => {
           )}
         </div>
       </div>
-      {isDialogRecordingOpened && nftKey && tokenId && (
-        <RecordingDialog
-          dataKey={nftKey}
-          chainId={chainId as String}
-          address={tokenAddress as String}
-          tokenId={tokenId}
-          version={version as String}
-          isOpened={isDialogRecordingOpened}
-          onDialogClosed={() => onHandleDialogClosed()}
-          setAllMuted={muted => setAllMuted(muted)}
-          setAllState={state => setAllState(state)}
-        />
-      )}
+      {isDialogRecordingOpened && nftKey && tokenId && <RecordingDialog />}
       {isShareDialogShow && nftKey && (
         <ShareDialog
           chainId={chainId as String}
