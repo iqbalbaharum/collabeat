@@ -1,9 +1,12 @@
 import { Nft } from 'lib'
 import { useNavigate } from 'react-router-dom'
 import { useBoundStore } from 'store'
-import nfts from 'data/nft.json'
+// import nfts from 'data/nft.json'
 import { formatDataKey } from 'utils'
 import ChainToIcon from 'components/ChainToIcon'
+import { useGetNfts } from 'repositories/token.repository'
+import { useEffect, useState } from 'react'
+import { LineageTokenMetadata } from 'lib/TokenMetadata'
 
 const PageInventory = () => {
   const navigate = useNavigate()
@@ -15,13 +18,20 @@ const PageInventory = () => {
     navigate(`/editor/${dataKey}`)
   }
 
+  const [nfts, setNfts] = useState({ data: [] as LineageTokenMetadata[], next: 0 })
+  const { data } = useGetNfts(10, 0)
+
+  useEffect(() => {
+    if (data) setNfts(data)
+  }, [data])
+
   return (
     <div className="">
       <h3 className="font-semibold text-lg mt-2 px-4 py-4 text-gray-400">Weekly NFT Beats</h3>
       <div className="block w-full overflow-auto">
         <div className="flex overflow-x-auto gap-4 scrollbar-hide">
-          {nfts &&
-            nfts.map((nft, index) => (
+          {nfts?.data &&
+            nfts.data.map((nft, index) => (
               <div key={index} className="first:ml-4 flex-none w-36">
                 <div className="relative w-full h-36">
                   <img
