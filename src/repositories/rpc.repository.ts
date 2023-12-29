@@ -4,6 +4,8 @@ import { useIpfs } from 'hooks/use-ipfs'
 import { RQ_KEY } from 'repositories'
 import { formatDataKey } from 'utils'
 import { LineageNftToken, LineageTokenMetadata } from 'lib/TokenMetadata'
+import RPC from 'utils/ethers'
+import { Metadata } from 'lib'
 
 const useGetCompleteTransactions = () => {
   return useQuery({
@@ -207,6 +209,47 @@ const useGetNftToken = (dataKey: string) => {
   })
 }
 
+const contractABI = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'getUserBalanceKeys',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'keySupply',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
 const fetchBeats = async (tokenId: string) => {
   const dataKey = formatDataKey(
     import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
@@ -214,25 +257,107 @@ const fetchBeats = async (tokenId: string) => {
     tokenId
   )
 
-  console.log(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, '')
+  const rpcEth = new RPC(window?.ethereum)
+
+  const balance = await rpcEth.readContractData({
+    contractABI,
+    contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
+    method: 'getUserBalanceKeys',
+    data: [tokenId],
+  })
 
   const [result_metadata, result_beats] = await Promise.all([
     rpc.getMetadata(dataKey, '0x01', '0x01', '', dataKey),
-    rpc.getMetadataUseKeyByBlock(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, ''),
+    searchMetadatasContent({
+      query: [
+        {
+          column: 'data_key',
+          op: '=',
+          query: dataKey,
+        },
+        {
+          column: 'meta_contract_id',
+          op: '=',
+          query: import.meta.env.VITE_META_CONTRACT_ID as string,
+        },
+        {
+          column: 'version',
+          op: '=',
+          query: '',
+        },
+      ],
+    }),
+    //rpc.getMetadataUseKeyByBlock(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, ''),
   ])
 
-  console.log([result_metadata, result_beats])
-  // const cid_metadata = result_metadata ? result_metadata.cid : ''
+  return { tokenId, lineage: result_metadata, beats: result_beats, boost: Number(balance) }
+}
 
-  // const promises: any[] = [
-  //   cid_metadata ? rpc.getContentFromIpfs(cid_metadata) : undefined,
-  //   cid_nous_storage ? rpc.getContentFromIpfs(cid_nous_storage) : undefined,
-  //   cid_nous_metadata ? rpc.getContentFromIpfs(cid_nous_metadata) : undefined,
-  //   cid_nous_level ? rpc.getContentFromIpfs(cid_nous_level) : undefined,
-  //   cid_nous_badge ? rpc.getContentFromIpfs(cid_nous_badge) : undefined,
-  // ]
+const getMetadataContent = async (
+  data_key: string,
+  meta_contract_id: string = import.meta.env.VITE_NOUS_AI_META_CONTRACT_ID,
+  public_key: string,
+  alias: string,
+  version = ''
+) => {
+  const metadata = await rpc.getMetadata(data_key, meta_contract_id, public_key, alias, version)
 
-  // const result = await Promise.all(promises)
+  if (!metadata?.cid) return undefined
+
+  const content = await rpc.getContentFromIpfs(metadata.cid)
+  return JSON.parse(content.data.result.content as string)
+}
+
+const searchMetadatasContent = async (filter: Partial<JSONRPCFilter<Metadata>>) => {
+  const metadata = await rpc.searchMetadatas(filter)
+
+  const exists = metadata && metadata.length == 1
+  if (!exists) return undefined
+
+  const content = await rpc.getContentFromIpfs(metadata[0].cid)
+  return JSON.parse(content.data.result.content as string)
+}
+
+const createDefaultMetadata = (token_id: string): LineageTokenMetadata => {
+  return {
+    owner: '',
+    token_address: import.meta.env.VITE_COLLABEAT_NFT as string,
+    token_id,
+    chain_id: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
+    dataKey: '',
+    latestPrice: 0,
+    metadata: {
+      name: '',
+      image: '',
+      description: '',
+      attributes: [],
+      version: '',
+    },
+    lineage: {
+      loose: false,
+      public_key: '',
+      hash: '',
+      cid: '',
+      alias: '',
+      version: '',
+      token_id: '',
+      token_key: '',
+      meta_contract_id: '',
+      data_key: '',
+    },
+    token: {
+      address: import.meta.env.VITE_COLLABEAT_NFT as string,
+      chain: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
+      id: token_id,
+    },
+    beats: {},
+    boost: 0,
+    nft: {
+      tokenId: token_id,
+      owners: [],
+      latestPrice: 0,
+    },
+  }
 }
 
 export {
@@ -245,4 +370,5 @@ export {
   useGetNftMetadata,
   useGetNftToken,
   fetchBeats,
+  createDefaultMetadata,
 }

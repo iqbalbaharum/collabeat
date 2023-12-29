@@ -1,6 +1,5 @@
-import { Dialog, Transition } from '@headlessui/react'
+import { Transition } from '@headlessui/react'
 import { PlayIcon } from 'components/Icons/icons'
-import { Fragment, useState } from 'react'
 import { useBoundStore } from 'store'
 
 const Player = () => {
@@ -22,8 +21,8 @@ const Player = () => {
             <div className="border border-yellow-500 w-full"></div>
             <div className={`flex justify-between items-center p-2 backdrop-blur shadow-2xl h-full`}>
               <div className="flex gap-4 items-center">
-                <img src={modal.player.nft?.image} className="h-10 w-10 bg-white rounded-md" />
-                <div className="text-md font-semibold">{modal.player.nft?.name}</div>
+                <img src={modal.player.nft?.metadata.image} className="h-10 w-10 bg-white rounded-md" />
+                <div className="text-md font-semibold">{modal.player.nft?.metadata.name}</div>
               </div>
               <div className="mr-3">
                 <PlayIcon />

@@ -25,7 +25,7 @@ import SignInModal from 'components/Modal/SignInModal'
 import PublicLayout from 'layouts/PublicLayout'
 import PageShareEditor from 'pages/share'
 import { Web3AuthProvider } from 'hooks/use-web3auth'
-import PagePlayList from 'pages/PlayList'
+import PagePlayList from 'pages/Playlist'
 
 const App = () => {
   return (

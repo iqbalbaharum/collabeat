@@ -77,7 +77,7 @@ const getMetadataUseKeyByBlock = async (nftKey: String, meta_contract_id: String
     }),
   })
 
-  return response.data?.result as Metadata[]
+  return response.data?.result
 }
 
 const getMetadata = async (

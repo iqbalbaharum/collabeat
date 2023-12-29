@@ -8,6 +8,7 @@ export type MintedNft = {
   metadataURI: string
   createdTimestamp: number
   owner: { id: string }
+  to: string
 }
 
 export function decodeMinted(data: string) {

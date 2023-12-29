@@ -1,10 +1,26 @@
-export interface LineageTokenMetadata {
-  attributes: Array<{ trait_type: string; value: string }>
-  external_url?: string
-  description?: string
-  image: string
+import { Metadata } from './Metadata'
+import { Token } from './Token'
+
+export interface OpenseaMetadata {
   name: string
-  token?: LineageNftToken
+  image: string
+  description: string
+  attributes: Array<{ trait_type: string; value: string }>
+  version: string
+}
+export interface LineageTokenMetadata {
+  owner: string
+  token_address: string
+  token_id: string
+  chain_id: string
+  dataKey: string
+  latestPrice: number
+  metadata: OpenseaMetadata
+  lineage: Metadata
+  token: LineageNftToken
+  beats: {}
+  boost: number
+  nft: Token
 }
 
 export interface LineageNftToken {

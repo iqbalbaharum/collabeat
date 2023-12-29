@@ -30,9 +30,11 @@ const MarketplaceMore = () => {
                   <div className="flex-1">
                     <div className="flex flex-col sm:gap-6 lg:gap-3 justify-start items-start text-gray-200 p-6">
                       <div className="flex gap-4 mb-3">
-                        <img src={modal.moreInfo.metadata?.image} className="h-24 w-24 rounded-md" />
+                        <img src={modal.moreInfo.metadata?.metadata.image} className="h-24 w-24 rounded-md" />
                         <div className="text-left">
-                          <div className="text-white text-lg font-semibold">{modal.moreInfo.metadata?.name}</div>
+                          <div className="text-white text-lg font-semibold">
+                            {modal.moreInfo.metadata?.metadata.image}
+                          </div>
                           <div className="text-xs uppercase text-gray-200">2 Collaborators</div>
                           <div className="text-xs uppercase text-gray-200">8 VOTES</div>
                         </div>
