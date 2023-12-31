@@ -40,7 +40,6 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
       uploadToIpfs().catch(console.log)
     }
   }, [uploadedCid, ipfsFork, prop, modal.nftify.selections])
-
   return (
     <>
       <Transition appear show={modal.nftify.isOpen} as={Fragment}>
@@ -91,7 +90,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
                           <ConfirmButton
                             cid={uploadedCid}
                             dataKey={modal.nftify.dataKey}
-                            name={modal.nftify.nft?.metadata.name as string}
+                            name={modal.nftify.nft?.name as string}
                             onNftifySuccess={onDialogClosed}
                           />
                         )}

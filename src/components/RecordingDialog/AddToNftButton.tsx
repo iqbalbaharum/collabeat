@@ -23,7 +23,7 @@ const AddToNftButton = () => {
 
   useEffect(() => {
     function handleSuccess() {
-      let timer = setTimeout(async () => {
+      const timer = setTimeout(async () => {
         await queryClient.invalidateQueries([RQ_KEY.GET_BEATS_BY_VERSION, nftKey, modal.audioRecording.version])
       }, 3000)
 

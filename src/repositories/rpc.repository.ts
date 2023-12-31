@@ -209,88 +209,42 @@ const useGetNftToken = (dataKey: string) => {
   })
 }
 
-const contractABI = [
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-    ],
-    name: 'getUserBalanceKeys',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'keySupply',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
-
-const fetchBeats = async (tokenId: string) => {
+const getCbNftMetadata = async (tokenId: string) => {
   const dataKey = formatDataKey(
     import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
     import.meta.env.VITE_COLLABEAT_NFT as string,
     tokenId
   )
 
-  const rpcEth = new RPC(window?.ethereum)
-
-  const balance = await rpcEth.readContractData({
-    contractABI,
-    contractAddress: import.meta.env.VITE_COLLABEAT_SOCIALFI as string,
-    method: 'getUserBalanceKeys',
-    data: [tokenId],
+  const metadata: Metadata[] = await rpc.searchMetadatas({
+    query: [
+      {
+        column: 'data_key',
+        op: '=',
+        query: dataKey,
+      },
+      {
+        column: 'meta_contract_id',
+        op: '=',
+        query: '0x01',
+      },
+      {
+        column: 'public_key',
+        op: '=',
+        query: import.meta.env.VITE_CB_NFT_METADATA_PK as string,
+      },
+    ],
   })
 
-  const [result_metadata, result_beats] = await Promise.all([
-    rpc.getMetadata(dataKey, '0x01', '0x01', '', dataKey),
-    searchMetadatasContent({
-      query: [
-        {
-          column: 'data_key',
-          op: '=',
-          query: dataKey,
-        },
-        {
-          column: 'meta_contract_id',
-          op: '=',
-          query: import.meta.env.VITE_META_CONTRACT_ID as string,
-        },
-        {
-          column: 'version',
-          op: '=',
-          query: '',
-        },
-      ],
-    }),
-    //rpc.getMetadataUseKeyByBlock(dataKey, import.meta.env.VITE_META_CONTRACT_ID as string, ''),
-  ])
+  const flattenedData: { [key: string]: any } = {}
+  for (const meta of metadata) {
+    const call = await rpc.getContentFromIpfs(meta.cid)
+    const alias = meta.alias as string
+    const j = JSON.parse(call.data.result.content as string)
+    flattenedData[alias] = j.content
+  }
 
-  return { tokenId, lineage: result_metadata, beats: result_beats, boost: Number(balance) }
+  return { metadata: flattenedData }
 }
 
 const getMetadataContent = async (
@@ -369,6 +323,6 @@ export {
   useGetBeatsByVersion,
   useGetNftMetadata,
   useGetNftToken,
-  fetchBeats,
+  getCbNftMetadata,
   createDefaultMetadata,
 }

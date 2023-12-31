@@ -28,7 +28,9 @@ export const getBeatNFTsByPage = async (variables?: ApolloClientFilter) => {
       id
       tokenId
       owners {
-        id
+        user {
+          id
+        }
       }
       latestPrice
     }

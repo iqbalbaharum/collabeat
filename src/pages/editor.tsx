@@ -9,11 +9,11 @@ import PlaylistList from 'components/Playlist/List'
 import NFTifyButton from 'components/Playlist/NFTifyButton'
 import { AudioDialogProvider } from 'components/RecordingDialog/hooks/useAudioDialog'
 import { useGetNftMetadata, useGetNftToken } from 'repositories/rpc.repository'
-import { useConnectedWallet } from 'hooks/use-connected-wallet'
+import { useWeb3Auth } from 'hooks/use-web3auth'
 
 const PageEditor = () => {
   const { nftKey } = useParams()
-  const { address } = useConnectedWallet()
+  const { address } = useWeb3Auth()
 
   const { data: token } = useGetNftToken(nftKey as string)
   const { data: nft } = useGetNftMetadata(nftKey as string)
@@ -26,9 +26,9 @@ const PageEditor = () => {
           <div className="px-2 pb-[130px]">
             <PlaylistControlPanel chainId={token?.chain} tokenId={token?.id} address={token?.address} version={''} />
             {nftKey && (
-              <div className="flex items-center justify-between py-5">
+              <div className="flex items-center justify-between p-2">
                 <div className="flex gap-1 md:gap-2">
-                  {nft && address.full && <NFTifyButton nftKey={nftKey} nft={nft} />}
+                  {nft && address && <NFTifyButton nftKey={nftKey} nft={nft} />}
                 </div>
                 <div className="ml-2 inline-block">
                   {/* <GenericButton icon={<ShareIcon />} onClick={() => setIsShareDialogShow(true)} /> */}
@@ -42,7 +42,7 @@ const PageEditor = () => {
               <RecordingDialog />
             </AudioDialogProvider>
           )}
-          {address.full && <NftifyDialog tokenId={token?.id} />}
+          {address && <NftifyDialog tokenId={token?.id} />}
           {isShareDialogShow && nftKey && (
             <ShareDialog
               chainId={token?.chain}

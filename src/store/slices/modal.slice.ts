@@ -3,6 +3,7 @@ import { resetters } from '..'
 import { SelectedAudio } from 'lib'
 import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { NftToken } from 'lib/NftToken'
+import { MusicItemData } from 'lib/MusicItem'
 
 export type ModalState = {
   isOpen: boolean
@@ -14,7 +15,7 @@ export type Modal = {
   signUpRainbow: ModalState
   audioRecording: ModalState & { chainId: string; address: string; tokenId: string; version: string }
   nftify: ModalState & { selections: SelectedAudio[]; dataKey: string; nft: LineageTokenMetadata | undefined }
-  moreInfo: ModalState & { tokenId: string; metadata: LineageTokenMetadata | undefined }
+  moreInfo: ModalState & { tokenId: string; metadata: MusicItemData | undefined }
   user: ModalState
   buyVote: ModalState & { tokenId: string }
   sellVote: ModalState & { tokenId: string }

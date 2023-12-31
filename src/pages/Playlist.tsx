@@ -4,12 +4,12 @@ import MusicItem from 'components/MusicItem'
 import MusicItemBuyDialog from 'components/MusicItem/BuyDialog'
 import MusicItemSellDialog from 'components/MusicItem/SellDialog'
 import Player from 'components/Player'
-import { LineageTokenMetadata } from 'lib/TokenMetadata'
+import { MusicItemData } from 'lib/MusicItem'
 import { useGetNfts } from 'repositories/token.repository'
 
 const PagePlayList = () => {
   const { data } = useGetNfts(10, 0)
-
+  console.log(data)
   return (
     <>
       <div className="w-full mx-auto h-full px-4">
@@ -22,9 +22,7 @@ const PagePlayList = () => {
           </div>
           <div className="w-full flex flex-col gap-3 lg:gap-4">
             {data &&
-              data.data.map((d, index) => (
-                <MusicItem key={index} item={d as LineageTokenMetadata} tokenId={d.token_id as string} />
-              ))}
+              data.data.map((d, index) => <MusicItem key={index} item={d as MusicItemData} tokenId={d.tokenId} />)}
           </div>
         </div>
       </div>
