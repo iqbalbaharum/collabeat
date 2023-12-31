@@ -23,6 +23,7 @@ interface Web3AuthContextInterface {
   callContractMethod: (data: CallContractMethodArgs) => Promise<Bytes | null>
   getAccounts: () => Promise<any>
   getUserInfo: () => Promise<any>
+  getEns: (address: string) => Promise<any>
   getUserBalance: () => Promise<string | undefined>
 }
 
@@ -195,6 +196,13 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
     return await rpc.getBalance()
   }
 
+  async function getEns(address: string): Promise<any> {
+    if (!provider) return
+
+    const rpc = new RPC(provider)
+    return rpc.getAddressLookup(address)
+  }
+
   useEffect(() => {
     async function init() {
       const web3 = new Web3(provider as any)
@@ -230,6 +238,7 @@ export const Web3AuthProvider = ({ children }: Web3AuthProviderProps) => {
         getAccounts,
         getUserInfo,
         getUserBalance,
+        getEns,
         provider,
       }}
     >

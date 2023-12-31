@@ -5,14 +5,21 @@ import { Fragment } from 'react'
 import { useBoundStore } from 'store'
 import { RWebShare } from 'react-web-share'
 import ImageContainer from 'components/ImageContainer'
-import { shortenAddress } from 'utils'
+import { ethers } from 'ethers'
+import { useWeb3Auth } from 'hooks/use-web3auth'
 
 const MarketplaceMore = () => {
   const { modal, setModalState } = useBoundStore()
+  const { getEns } = useWeb3Auth()
 
   const onHandleClose = () => {
     setModalState({ moreInfo: { isOpen: false, tokenId: '', metadata: undefined } })
   }
+
+  const getAddressEns = (address: string) => {
+    return getEns(address)
+  }
+
   return (
     <Transition appear show={modal.moreInfo.isOpen} as={Fragment}>
       <Dialog as="div" onClose={onHandleClose}>

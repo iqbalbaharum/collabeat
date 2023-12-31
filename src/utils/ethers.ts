@@ -126,4 +126,9 @@ export default class EthereumRpc {
       return error as string
     }
   }
+
+  async getAddressLookup(address: string): Promise<string | null> {
+    const ethersProvider = new ethers.BrowserProvider(this.provider)
+    return ethersProvider.lookupAddress(address)
+  }
 }

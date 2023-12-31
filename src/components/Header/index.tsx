@@ -4,7 +4,6 @@ import { Disclosure } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import { ConnectedWalletInfo } from './ConnectedWalletInfo'
 import { useWeb3Auth } from 'hooks/use-web3auth'
-import logo from '/img/logo.png'
 import logoSmall from '/img/logo-small.png'
 
 export default function Header() {
