@@ -19,7 +19,7 @@ const Player = () => {
     if (isPlaying) {
       stopBeats()
     }
-  }, [modal.player.nft.metadata.name, stopBeats])
+  }, [modal.player.nft?.metadata.name, stopBeats])
 
   useEffect(() => {
     return () => {
