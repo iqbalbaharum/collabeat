@@ -19,7 +19,7 @@ export type Modal = {
   user: ModalState
   buyVote: ModalState & { tokenId: string }
   sellVote: ModalState & { tokenId: string }
-  player: ModalState & { nft: MusicItemData | undefined }
+  player: ModalState & { nft: MusicItemData | undefined; tokenId: string }
 }
 
 export interface ModalSlice {
@@ -38,7 +38,7 @@ const initialModal = {
     buyVote: { isOpen: false, tokenId: '' },
     sellVote: { isOpen: false, tokenId: '' },
     moreInfo: { isOpen: false, tokenId: '', metadata: undefined },
-    player: { isOpen: false, nft: undefined },
+    player: { isOpen: false, nft: undefined, tokenId: '' },
   },
 }
 

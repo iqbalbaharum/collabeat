@@ -13,7 +13,7 @@ const MusicItem = (prop: Prop) => {
   const { setModalState } = useBoundStore()
 
   const onHandleNftClicked = () => {
-    setModalState({ player: { isOpen: true, nft: prop.item } })
+    setModalState({ player: { isOpen: true, nft: prop.item, tokenId: prop.tokenId } })
   }
 
   return (

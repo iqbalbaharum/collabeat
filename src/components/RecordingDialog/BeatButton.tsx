@@ -16,18 +16,24 @@ const BeatButton = (prop: Prop) => {
   const player = useRef<Tone.Player>(new Tone.Player({ url: prop.beat.url, loop: true }).toDestination())
 
   const onHandleClicked = () => {
+    Tone.Transport.scheduleOnce(() => {
+      if (prop.isActive && player) {
+        player.current?.start()
+      } else {
+        player.current?.stop()
+      }
+    }, Tone.Transport.nextSubdivision('4n'))
+
     prop.onHandleBeatClicked(prop.beat)
   }
 
   useEffect(() => {
-    if (prop.isActive && player) {
-      player.current?.start()
-    } else {
-      player.current?.stop()
-    }
-
     if (mediaStream) {
       player.current.connect(mediaStream)
+    }
+
+    return () => {
+      player.current.disconnect(mediaStream)
     }
   }, [prop.isActive, mediaStream])
 
