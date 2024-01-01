@@ -3,7 +3,7 @@ import { resetters } from '..'
 import { SelectedAudio } from 'lib'
 import { LineageTokenMetadata } from 'lib/TokenMetadata'
 import { NftToken } from 'lib/NftToken'
-import { MusicItemData } from 'lib/MusicItem'
+import { MusicItemData, MusicItemMetadata } from 'lib/MusicItem'
 
 export type ModalState = {
   isOpen: boolean
@@ -19,7 +19,7 @@ export type Modal = {
   user: ModalState
   buyVote: ModalState & { tokenId: string }
   sellVote: ModalState & { tokenId: string }
-  player: ModalState & { nft: LineageTokenMetadata | undefined }
+  player: ModalState & { nft: MusicItemData | undefined }
 }
 
 export interface ModalSlice {

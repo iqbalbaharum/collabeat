@@ -1,7 +1,7 @@
 import { PlayIcon } from 'components/Icons/icons'
 import { MoreIcon } from 'components/Icons/system'
 import ImageContainer from 'components/ImageContainer'
-import { MusicItemData } from 'lib/MusicItem'
+import { MusicItemBeat, MusicItemData } from 'lib/MusicItem'
 import { useBoundStore } from 'store'
 
 interface Prop {
@@ -13,8 +13,9 @@ const MusicItem = (prop: Prop) => {
   const { setModalState } = useBoundStore()
 
   const onHandleNftClicked = () => {
-    // setModalState({ player: { isOpen: true, nft: prop.item } })
+    setModalState({ player: { isOpen: true, nft: prop.item } })
   }
+
   return (
     <>
       <div className="cursor-pointer">

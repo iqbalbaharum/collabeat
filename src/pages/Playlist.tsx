@@ -9,7 +9,6 @@ import { useGetNfts } from 'repositories/token.repository'
 
 const PagePlayList = () => {
   const { data } = useGetNfts(10, 0)
-  console.log(data)
   return (
     <>
       <div className="w-full mx-auto h-full px-4">

@@ -86,7 +86,7 @@ const useStoreBlob = () => {
   return useMutation({
     mutationFn: async (blob: Blob) => {
       const resp = await ipfs?.storeBlob(blob)
-      const url = `${import.meta.env.VITE_IPFS_NFT_STORAGE_URL}/${resp}`
+      const url = `${import.meta.env.VITE_IPFS_BEAT_STORAGE_URL}/${resp}`
       return url
     },
   })

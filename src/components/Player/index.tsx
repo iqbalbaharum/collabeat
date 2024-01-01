@@ -1,9 +1,31 @@
 import { Transition } from '@headlessui/react'
-import { PlayIcon } from 'components/Icons/icons'
+import { PlayIcon, StopIcon } from 'components/Icons/icons'
+import ImageContainer from 'components/ImageContainer'
+import { useEffect } from 'react'
 import { useBoundStore } from 'store'
+import { usePlayer } from './hooks/usePlayer'
 
 const Player = () => {
   const { modal } = useBoundStore()
+  const { playBeats, stopBeats, isPlaying } = usePlayer()
+
+  const handlePlay = async () => {
+    if (modal.player.nft) {
+      await playBeats(modal.player.nft.metadata.beats)
+    }
+  }
+
+  useEffect(() => {
+    if (isPlaying) {
+      stopBeats()
+    }
+  }, [modal.player.nft.metadata.name, stopBeats])
+
+  useEffect(() => {
+    return () => {
+      stopBeats()
+    }
+  }, [])
 
   return (
     <Transition
@@ -21,11 +43,23 @@ const Player = () => {
             <div className="border border-yellow-500 w-full"></div>
             <div className={`flex justify-between items-center p-2 backdrop-blur shadow-2xl h-full`}>
               <div className="flex gap-4 items-center">
-                <img src={modal.player.nft?.metadata.image} className="h-10 w-10 bg-white rounded-md" />
+                <ImageContainer
+                  src={modal.player.nft?.metadata.image as string}
+                  className="h-10 w-10 bg-white rounded-md"
+                />
                 <div className="text-md font-semibold">{modal.player.nft?.metadata.name}</div>
               </div>
-              <div className="mr-3">
-                <PlayIcon />
+              <div className="flex gap-2">
+                {!isPlaying && (
+                  <div className="text-green-300 cursor-pointer hover:text-green-500" onClick={handlePlay}>
+                    <PlayIcon />
+                  </div>
+                )}
+                {isPlaying && (
+                  <div className="text-red-500 hover:text-red-300 cursor-pointer" onClick={stopBeats}>
+                    <StopIcon />
+                  </div>
+                )}
               </div>
             </div>
           </div>

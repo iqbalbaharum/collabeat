@@ -21,6 +21,7 @@ export interface LineageTokenMetadata {
   beats: {}
   boost: number
   nft: Token
+  name: string
 }
 
 export interface LineageNftToken {

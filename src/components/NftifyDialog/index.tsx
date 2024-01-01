@@ -23,6 +23,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
   const { mintPrice } = useMint()
 
   const onDialogClosed = () => {
+    setUplodedCid('')
     setModalState({ nftify: { isOpen: false, selections: [], dataKey: '', nft: undefined } })
   }
 
@@ -36,7 +37,7 @@ const NftifyDialog = (prop: NftifyDialogProp) => {
       }
     }
 
-    if (!uploadedCid) {
+    if (modal.nftify.isOpen && modal.nftify.selections.length > 0 && !uploadedCid) {
       uploadToIpfs().catch(console.log)
     }
   }, [uploadedCid, ipfsFork, prop, modal.nftify.selections])
