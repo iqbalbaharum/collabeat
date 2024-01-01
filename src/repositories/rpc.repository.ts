@@ -272,48 +272,6 @@ const searchMetadatasContent = async (filter: Partial<JSONRPCFilter<Metadata>>) 
   return JSON.parse(content.data.result.content as string)
 }
 
-const createDefaultMetadata = (token_id: string): LineageTokenMetadata => {
-  return {
-    owner: '',
-    token_address: import.meta.env.VITE_COLLABEAT_NFT as string,
-    token_id,
-    chain_id: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
-    dataKey: '',
-    latestPrice: 0,
-    metadata: {
-      name: '',
-      image: '',
-      description: '',
-      attributes: [],
-      version: '',
-    },
-    lineage: {
-      loose: false,
-      public_key: '',
-      hash: '',
-      cid: '',
-      alias: '',
-      version: '',
-      token_id: '',
-      token_key: '',
-      meta_contract_id: '',
-      data_key: '',
-    },
-    token: {
-      address: import.meta.env.VITE_COLLABEAT_NFT as string,
-      chain: import.meta.env.VITE_DEFAULT_CHAIN_ID as string,
-      id: token_id,
-    },
-    beats: {},
-    boost: 0,
-    nft: {
-      tokenId: token_id,
-      owners: [],
-      latestPrice: 0,
-    },
-  }
-}
-
 export {
   useGetCompleteTransactions,
   useGetTransactions,
@@ -324,5 +282,4 @@ export {
   useGetNftMetadata,
   useGetNftToken,
   getCbNftMetadata,
-  createDefaultMetadata,
 }
