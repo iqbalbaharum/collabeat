@@ -1,7 +1,4 @@
 import { Beat } from 'lib/Beat'
-import { useEffect, useRef, useState } from 'react'
-import * as Tone from 'tone'
-import { useAudioDialog } from './hooks/useAudioDialog'
 
 interface Prop {
   color: string
@@ -10,32 +7,11 @@ interface Prop {
   isActive: boolean
   onHandleBeatClicked: (beat: Beat) => void
 }
+
 const BeatButton = (prop: Prop) => {
-  const { mediaStream } = useAudioDialog()
-
-  const player = useRef<Tone.Player>(new Tone.Player({ url: prop.beat.url, loop: true }).toDestination())
-
   const onHandleClicked = () => {
-    Tone.Transport.scheduleOnce(() => {
-      if (prop.isActive && player) {
-        player.current?.start()
-      } else {
-        player.current?.stop()
-      }
-    }, Tone.Transport.nextSubdivision('4n'))
-
     prop.onHandleBeatClicked(prop.beat)
   }
-
-  useEffect(() => {
-    if (mediaStream) {
-      player.current.connect(mediaStream)
-    }
-
-    return () => {
-      player.current.disconnect(mediaStream)
-    }
-  }, [prop.isActive, mediaStream])
 
   return (
     <button

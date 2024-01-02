@@ -1,20 +1,29 @@
 import { useEffect, useState } from 'react'
 import { useAudioDialog } from './hooks/useAudioDialog'
 import { PlayIcon, StopIcon } from 'components/Icons/icons'
+import { useAudioList } from 'hooks/useAudioList'
+import { PlayerState } from 'lib'
 
-const PlayButton = () => {
+interface Prop {
+  isPlayAll: boolean
+}
+
+const PlayButton = (prop: Prop) => {
   const [isRecordedPlaying, setIsRecordedPlaying] = useState(false)
 
   const { audioRef, audioData } = useAudioDialog()
+  const { setAllState } = useAudioList()
 
   const onHandlePlayClicked = () => {
-    if (audioData.url.length <= 0) {
+    if (!prop.isPlayAll && audioData.url.length <= 0) {
       return
     }
     if (audioRef) {
       audioRef.current.play()
       setIsRecordedPlaying(true)
     }
+
+    if (prop.isPlayAll) setAllState(PlayerState.PLAY)
   }
 
   const onHandleStopClicked = () => {
@@ -23,6 +32,7 @@ const PlayButton = () => {
       audioRef.current.currentTime = 0
       setIsRecordedPlaying(false)
     }
+    if (prop.isPlayAll) setAllState(PlayerState.STOP)
   }
 
   useEffect(() => {
@@ -34,7 +44,7 @@ const PlayButton = () => {
       <>
         {isRecordedPlaying ? (
           <button
-            className="rounded-md capitalize py-2.5 px-2 flex flex-col items-center justify-center gap-2"
+            className="rounded-md capitalize py-2.5 px-2 flex flex-col items-center justify-center gap-2 text-sm text-red-400"
             onClick={onHandleStopClicked}
           >
             <StopIcon />
@@ -43,13 +53,14 @@ const PlayButton = () => {
         ) : (
           <button
             className={`capitalize py-2.5 px-2 flex flex-col items-center gap-2 justify-center ${
-              audioData.url.length > 0 ? 'text-yellow-400' : 'text-slate-400'
+              !prop.isPlayAll ? (audioData.url.length > 0 ? 'text-green-600' : 'text-slate-400') : 'text-yellow-500'
             }`}
-            disabled={audioData.url.length <= 0}
+            disabled={!prop.isPlayAll ? audioData.url.length <= 0 : false}
             onClick={onHandlePlayClicked}
           >
             <PlayIcon />
-            Play
+            {prop.isPlayAll && <span className="text-sm">All</span>}
+            {!prop.isPlayAll && <span className="text-sm">Single</span>}
           </button>
         )}
       </>

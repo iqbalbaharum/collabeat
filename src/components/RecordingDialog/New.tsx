@@ -40,8 +40,8 @@ const NewRecording = () => {
               </button>
             )}
           </div>
-          <PlayButton />
-          &nbsp;
+          <PlayButton isPlayAll={true} />
+          <PlayButton isPlayAll={false} />
           <AddToNftButton />
         </div>
         <div className="mt-2 grid grid-cols-4 gap-2 w-full ">
